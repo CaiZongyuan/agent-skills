@@ -2,6 +2,8 @@
 
 Standalone skills for simplifying software changes, coordinating development across issues or milestones, and recording delivery timelines.
 
+Skill instructions and default report interfaces use English.
+
 ## Install
 
 ```sh
