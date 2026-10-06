@@ -4,11 +4,11 @@ Small engineering skills that work with [Matt Pocock's skills](https://github.co
 
 Skill instructions and report interfaces use English. The [offline workflow walkthrough](docs/workflow.html) explains the first version in Chinese, with examples and interactive demonstrations. Download that HTML file and open it locally; it needs no server or CDN.
 
-This is a local first version for review. It has not been pushed to GitHub or installed into the host project yet.
+The first version incorporates lessons from a previous development retrospective: early checks of high-risk test oracles, actionable known fixture risks, change-only CI observation, shared-input reporting, fast feedback, and scheduling by actual blockers. The [walkthrough](docs/workflow.html) distinguishes implemented generic tools from remaining product-specific work.
 
 ## Install
 
-After this version is published, install Matt and this package separately:
+Install Matt and this package separately:
 
 ```sh
 npx skills@latest add mattpocock/skills

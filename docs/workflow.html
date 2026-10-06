@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Matt 与 PM 开发流程 · 本地第一版</title><style>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Matt 与 PM 开发流程 · 第一版</title><style>
     :root{--paper:#f6f4ef;--surface:#fff;--ink:#202d3b;--muted:#586577;--line:#dfe4e8;--blue:#175a77;--blue-soft:#eaf3f7;--amber:#966014;--amber-soft:#fff3d8;--green:#246a50;--green-soft:#eaf5ee;--red:#a34338;--red-soft:#fff0ed;--radius:18px}
     *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI","Noto Sans CJK SC","Microsoft YaHei",sans-serif;font-size:16px;line-height:1.85}
     a{color:var(--blue);text-underline-offset:4px}button,input{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #eea84d;outline-offset:4px}button:disabled{cursor:default;opacity:.55}h1,h2,h3,h4,p{margin-top:0}h1{font-size:clamp(32px,4vw,48px);line-height:1.3;letter-spacing:-.02em;max-width:850px;margin-bottom:20px}h2{font-size:28px;line-height:1.4;margin-bottom:12px}h3{font-size:21px;line-height:1.5;margin-bottom:10px}h4{font-size:16px;margin-bottom:6px}p{margin-bottom:14px}strong{font-weight:700}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.9em;overflow-wrap:anywhere}pre{padding:18px 22px;border-radius:12px;background:#182936;color:#edf5f8;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7}
@@ -13,8 +13,23 @@
     @media(max-width:1000px){.flow{grid-template-columns:repeat(3,minmax(0,1fr))}.grid{grid-template-columns:1fr 1fr}.scenario-layout{grid-template-columns:190px 1fr}.wrap{width:calc(100% - 40px)}}
     @media(max-width:740px){header{padding-top:36px}.grid,.grid.two,.step-columns,.fact-grid,.verdicts{grid-template-columns:1fr}.scenario-layout{grid-template-columns:1fr}.stages{border-right:0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr}.step-panel{padding:22px;min-height:0}.demo-toolbar{align-items:flex-start;flex-direction:column}.exclude-list{display:block}.rpm-row{gap:10px}.rpm-value{min-width:125px}.talk{grid-template-columns:1fr;gap:4px}.flow{grid-template-columns:repeat(2,minmax(0,1fr))}}
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-  </style></head><body><header><div class="wrap"><div class="eyebrow">MATT × PM · 本地第一版</div><div class="draft">源码与工具已实现 · 供你检查 · 尚未发布或安装</div><h1>PM 管交付，<br>专业方法各做一件事。</h1><p class="lead">Matt 负责需求与专业开发方法；你的 PM 安排明确任务，三个薄技能完成影响、测量和验证入口工作。Advisor 按需帮助判断，工具保存事实，PM 保留交付裁决。</p><div class="header-pills"><span>6 个技能目录，3 个新方法</span><span>原有 Matt 与项目暂存区保持完整</span><span>教学演示和实际工具证据分开</span></div></div></header><nav aria-label="页面导航"><div class="wrap nav-inner"><a href="#how-to-call">拆分与调用</a><a href="#actual-source">实际技能源码</a><a href="#advisor-explained">Advisor</a><a href="#examples">三个流程例子</a><a href="#automation">工具与事实</a><a href="#install">安装方式</a></div></nav><main class="wrap">  <section id="how-to-call">
-    <div class="section-head"><span class="section-number">实际第一版 · 拆分与调用</span><h2>三个薄技能，各自完成一种工作。</h2><p>下面的技能源文件已写入本地第一版，当前尚未安装或发布。每个技能就是一个包含 SKILL.md 的目录；模型读取其中的指令后完成任务。仅凭新增目录，不会自动启动新 Agent 或运行检查。</p></div>
+  </style></head><body><header><div class="wrap"><div class="eyebrow">MATT × PM · 开发流程第一版</div><div class="draft">薄 PM + 三个独立方法 · 已验证的第一版</div><h1>PM 管交付，<br>专业方法各做一件事。</h1><p class="lead">Matt 负责需求与专业开发方法；你的 PM 安排明确任务，三个薄技能完成影响、测量和验证入口工作。Advisor 按需帮助判断，工具保存事实，PM 保留交付裁决。</p><div class="header-pills"><span>6 个技能目录，3 个新方法</span><span>原有 Matt 与项目暂存区保持完整</span><span>教学演示和实际工具证据分开</span></div></div></header><nav aria-label="页面导航"><div class="wrap nav-inner"><a href="#retro-lessons">复盘如何落地</a><a href="#how-to-call">拆分与调用</a><a href="#actual-source">实际技能源码</a><a href="#advisor-explained">Advisor</a><a href="#examples">三个流程例子</a><a href="#automation">工具与事实</a><a href="#install">安装方式</a></div></nav><main class="wrap">
+<section id="retro-lessons">
+  <div class="section-head"><span class="section-number">复盘来源 · 2026-10-06</span><h2>上次复盘，哪些已经变成方法或工具？</h2><p>复盘的重点是减少最后才发现的问题，以及重复查询、复制事实。本版将适合跨项目复用的部分写入技能；产品的 TypeScript CI 和业务 runner 改造保留在原迁移任务中。</p></div>
+  <div class="table-shell"><table class="responsibility"><thead><tr><th scope="col">复盘里的问题</th><th scope="col">本版怎样吸收</th><th scope="col">实际落地程度</th></tr></thead><tbody>
+    <tr><td>测试绿了，仍漏错或误拒绝合法值</td><td>首个高风险判据先给非作者看权威合同、独立期望与最小反例。容差、顺序、gap、拒绝前后事实要能辨别。</td><td>方法已写入 <a href="../skills/pm-development/references/delivery.md">delivery</a>；各产品测试仍由对应任务实施。</td></tr>
+    <tr><td>已知时间夹具、共享配额风险处理太晚</td><td>开工把失败签名、最小入口、前提、未证项和退出条件整理清楚；区分稳定容量样本与真实过期行为。</td><td>开工与首片段规则已写入 delivery；没有重新修旧业务。</td></tr>
+    <tr><td>CI 无变化也反复查询</td><td>工具内部有界观察，只对 head、attempt、阶段、结果与观察错误变化通知。旧 head 与 API 错误保持归属和未知状态。</td><td><a href="../skills/pm-development/references/ci-observer.md">CI observer</a> 已实现并测试；只保存状态和安全证据链接。</td></tr>
+    <tr><td>current 与 HTML 人工重复维护</td><td>人工授权/范围/结论与机器事实各有来源，一次投影生成两个视图；绿色不能替 PM 判定完成。</td><td><a href="../skills/development-timeline/references/composition.md">同源报告工具</a> 已实现并测试。</td></tr>
+    <tr><td>便宜错误反馈晚，独立组被前组挡住</td><td>现有格式、类型、静态和定向检查先反馈；按真实依赖和隔离条件给独立检查并行机会。</td><td>协调原则已写入 delivery；项目 CI job 重排和接线尚未在此任务实施。</td></tr>
+    <tr><td>回执来源、失败终态与时间容易混淆</td><td>要求记录来源、实际覆盖、退出/清理状态；分开 runner 完成、观察时刻与下一动作，未知留未知。</td><td>CI 事实与报告的部分已实现；业务 runner 的源码/test ID/失败终态改造仍为产品工作。</td></tr>
+    <tr><td>按 Agent 数量调度，忽略真正阻塞</td><td>分别判断源码、重型运行和审查容量；记录就绪/next/owner，重型锁只覆盖运行和清理；修补复用原作者与有效审查。</td><td><a href="../skills/pm-development/SKILL.md">PM 调度规则</a> 已保留并集中；这不是固定增加写入者。</td></tr>
+  </tbody></table></div>
+  <div class="note"><p><strong>留给产品任务：</strong>TypeScript CI 快速组/独立 job 接线、业务 runner 来源与终态修补、产品当前入口及历史交接导航整理。这些没有被技能发布冒充为已经完成。</p><p><strong>沿用你的排除项：</strong>保持既有上下文压缩、阶段交接、worktree 与 issue 粒度安排；保留 Matt 原件、独立审查、验收和最终 head 的必需 CI。新栈按真实依赖验证，不因历史复盘新增旧 Rust/Docker CI。</p></div>
+  <p class="caption">本节归纳本地复盘的通用经验。原会话、日志、账号和产品证据不随技能包发布；尚未测得整套流程的交付提速。</p>
+</section>
+  <section id="how-to-call">
+    <div class="section-head"><span class="section-number">实际第一版 · 拆分与调用</span><h2>三个薄技能，各自完成一种工作。</h2><p>下面的技能源文件已完成第一版，可随技能包安装。每个技能就是一个包含 SKILL.md 的目录；模型读取其中的指令后完成任务。仅凭新增目录，不会自动启动新 Agent 或运行检查。</p></div>
     <pre><code>skills/
 ├── pm-development/
 │   ├── SKILL.md                 范围、调度、交付 + 按条件指向专业技能
@@ -37,7 +52,7 @@
     <div class="card" style="margin-top:20px"><h3>仍然只用 PM，也可以这样开始。</h3><pre><code>$pm-development 按已批准任务实现这次事件字段调整；
 核对真实消费者和兼容性，复用已有验证；
 按风险安排独立审查，完成实际集成后给我交付报告。</code></pre><p><strong>PM 的派发：</strong>“Developer，当前票改了共享事件字段。实施前使用 change-impact 查消费者，给出关键兼容假设及证明；既有有效证据直接引用，缺口再补。”</p><p><strong>Developer 的接续：</strong>读取 change-impact 的方法，给出影响结果，然后继续原票实现。改完之后 Reviewer 使用这份证据检查完整候选；它不是一个额外的固定审查回合。</p><p class="small muted">你无需在每次 PM 请求中列出三个技能。普通文案或样式修改不会固定调用全部技能；性能任务才有测量检查，环境入口已经可靠时直接复用指南。</p></div>
-    <div class="note"><p><strong>安装时，同一个仓库带来这些目录。</strong>实现和发布后，使用 <code>npx skills@latest add CaiZongyuan/skills</code> 并选择需要的技能。配合 PM 选用时，README 会列明推荐安装组合；如果某个技能未安装，PM 应说明缺失能力并使用项目已有入口，不把未做的工作写成已完成。</p><p>这次仍保留 Matt 原文件。新增的目录属于你的技能仓库；这一版供你检查职责和调用方式，产品项目的安装副本保持原样。</p></div>
+    <div class="note"><p><strong>安装时，同一个仓库带来这些目录。</strong>使用 <code>npx skills@latest add CaiZongyuan/skills</code> 并选择需要的技能。配合 PM 选用时，README 会列明推荐安装组合；如果某个技能未安装，PM 应说明缺失能力并使用项目已有入口，不把未做的工作写成已完成。</p><p>这次仍保留 Matt 原文件。新增的目录属于你的技能仓库；三个独立技能与 PM 配套安装，按任务选择方法。</p></div>
   </section>
   <section id="advisor-explained">
     <div class="section-head"><span class="section-number">先解决疑问 · Advisor 是谁</span><h2>Advisor 是被临时请来帮忙判断难题的顾问。</h2><p>你可以把一次开发看成小团队：Developer 写代码，Reviewer 检查成果，PM 安排交付。卡在一个难题上时，PM 再找一位顾问读证据、提出下一步。</p></div>
@@ -57,7 +72,7 @@
       <div class="talk"><span class="speaker">Developer</span><p>使用 Matt 的 implement / tdd：用户输入名称时列表正确变化，先看到目标行为失败，再做最小实现。用已约定的接口验证，不去测试组件内部变量。</p></div>
       <div class="talk"><span class="speaker">完成时</span><p>做一次适用的小范围简化、固定完整候选、独立审查、确认最终 head 的必需 CI，并核对实际集成。pr 把行为和证据写清楚，timeline 告诉你做完了什么。出现值得学习的问题，再让 retro 从同一记录提出环境改法。</p></div>
     </div>
-    <div class="note"><p><strong>你只需要在真实产品取舍上决定。</strong>例如“是否改成模糊搜索并匹配标签”扩大了需求，需要你选择；修掉已批准筛选行为的常规错误、复用已有测试入口，不重新问一遍批准。发布、合并沿用本轮已有授权。</p><p class="small">下面的 CI 门禁按所开发项目真实规定的 required checks 执行。通用技能仓库当前没有 CI workflow，这不是给所有仓库新增 CI 的要求，也不表示本次技能改造已经跑过远程 CI。</p></div>
+    <div class="note"><p><strong>你只需要在真实产品取舍上决定。</strong>例如“是否改成模糊搜索并匹配标签”扩大了需求，需要你选择；修掉已批准筛选行为的常规错误、复用已有测试入口，不重新问一遍批准。发布、合并沿用本轮已有授权。</p><p class="small">下面的 CI 门禁按所开发项目真实规定的 required checks 执行。技能包使用公开 Node 行为测试验证工具，未配置远程 CI workflow。产品交付仍按该项目真实的 required checks 执行。</p></div>
   </section>
   <section id="line">
     <div class="section-head"><span class="section-number">02 · 一条主线，职责有明确归属</span><h2>Matt 负责方法，PM 负责让这次工作顺利交付。</h2><p>PM 从明确任务、批准的体验或已经拆好的票开始。前期还模糊，就回到 ask-matt 对应入口澄清。PM 不再重新访谈，也不重复生成另一份规格。</p></div>
@@ -120,7 +135,7 @@
     <div class="note green"><p><strong>Docker 规则只在真的用 Docker 时适用。</strong>资源所有权、隔离、中断恢复与清理仍按实际运行依赖保留。新栈无 Docker 的日常验证不被旧栈资源清单拖住。</p></div>
   </section>
   <section id="install">
-    <div class="section-head"><span class="section-number">07 · 安装后，怎么开始</span><h2>先装 Matt，再装你的补充技能。</h2><p>安装示例来自上游及目标仓库的公开入口。本版尚未安装或发布；README 已说明技能组合和运行依赖。</p></div>
+    <div class="section-head"><span class="section-number">07 · 安装后，怎么开始</span><h2>先装 Matt，再装你的补充技能。</h2><p>安装示例来自上游及目标仓库的公开入口。README 已说明技能组合和运行依赖；选择对应项目与 Agent 安装。</p></div>
     <div class="grid two"><div class="card"><h3>安装命令</h3><pre><code>npx skills@latest add mattpocock/skills
 npx skills@latest add CaiZongyuan/skills</code></pre><p class="small muted">按安装器选择项目 / 全局与对应 Agent。已有项目配置无需重新运行 setup-matt-pocock-skills；全新项目且 tracker / 术语 / 文档约定缺失时再配置。</p></div><div class="card"><h3>下一次你可以这样说</h3><p><strong>需求还模糊：</strong>“$grill-with-docs 我要加资产筛选，先把范围和体验说清楚。”</p><p><strong>任务已明确：</strong>“$pm-development 按已批准的票推进；沿用验收与范围，Advisor 在高风险或卡住时启用，最终给我真实交付报告。”</p><p><strong>独立小工作：</strong>ask-matt 可以直接选择 implement；不必为每个小改动组建完整 PM 班组。</p></div></div>
     <details><summary>“已装好”与“当前能力真的可用”要区分</summary><div class="detail-body"><p>Matt 原文可能写 Skill tool 或特定调度方式；Codex 中由当前技能加载与可用子 Agent 能力等价执行，不假装存在未提供的工具。PM 读取当前运行限制，没有并行能力时按实际容量串行。</p><p>新版 Matt 默认读取 GLOSSARY.md；已有项目若通过 AGENTS / domain 配置指定 CONTEXT.md，继续以项目指定文件为准。此次优化不会顺便迁移项目术语文件。</p><p>通用 helper 的实际代码、定向验证与独立审查证据随第一版保存。项目 CI 的新增入口需要在对应产品任务真正实现和接线后才进入命令清单。</p></div></details>
@@ -273,7 +288,7 @@ Place the concise guide in the existing testing/developer-doc location, or the u
 The guide is usable when another actor can follow its demonstrated path and understand its limits. Report the walkthrough outcome and any missing capability. Reuse it while inputs remain valid; update affected sections when commands, contracts, or environment change. A guide adds navigation and evidence, not another delivery gate.
 
 Method adapted from [pstack create-verification-skill at df581122](https://github.com/cursor/plugins/blob/df581122cde17e6e27686b5a448bde23e4ad4318/pstack/skills/create-verification-skill/SKILL.md); this adaptation produces project documentation rather than a per-feature skill.
-</code></pre></div></details></section><footer class="footer"><p><strong>第一版状态：</strong>源码保存在本地独立分支 draft/pm-thin-skills-20261006。尚未推送到 GitHub、修改产品 CI 或同步项目安装副本。页面的案例是教学演示；真实实现验证和独立审查记录另存。</p><p>方法来源：<a href="https://github.com/mattpocock/skills">Matt skills</a> · <a href="https://github.com/cursor/plugins/tree/df581122cde17e6e27686b5a448bde23e4ad4318/pstack">pstack</a> · <a href="https://github.com/cursor/plugins/tree/df581122cde17e6e27686b5a448bde23e4ad4318/advisor">Advisor</a>。页面显示和交互不依赖网络。</p></footer></main><script>
+</code></pre></div></details></section><footer class="footer"><p><strong>第一版状态：</strong>第一版源码、工具和 README 已完成适用验证与独立审查。页面的案例是教学演示，真实工具验证另有记录；技能发布与产品的 CI/业务改造是不同工作。</p><p>方法来源：<a href="https://github.com/mattpocock/skills">Matt skills</a> · <a href="https://github.com/cursor/plugins/tree/df581122cde17e6e27686b5a448bde23e4ad4318/pstack">pstack</a> · <a href="https://github.com/cursor/plugins/tree/df581122cde17e6e27686b5a448bde23e4ad4318/advisor">Advisor</a>。页面显示和交互不依赖网络。</p></footer></main><script>
   'use strict';
   const adviceSteps={
     question:{title:'PM 把一个具体问题交给顾问',body:'合同：旧版本保存应返回 409，草稿保留。现象：连续两次保存返回 409。已有证据：请求中的版本、响应状态、相关日志和代码位置。候选：增加三次重试，或者先查版本为何过期。问题：哪个假设尚未验证，下一步怎样区分原因？',limit:'给相关证据即可。顾问不需要重新扫描整份开发历史。'},
