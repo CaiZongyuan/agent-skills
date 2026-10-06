@@ -1,47 +1,46 @@
 ---
 name: pm-development
-description: Coordinate multi-issue or long-running agent development, scheduling verification, independent review, and integration by risk, with delivery timelines and improvement reports.
+description: Coordinate approved multi-issue or long-running development, owning scope, agent capacity, risk decisions, and evidence for actual integration and delivery.
 ---
 
 # PM Development
 
-The project manager (PM) owns scope, scheduling, risk decisions, and delivery verification; independent Developers own implementation. Follow the runtime configuration and host repository's rules, specifications, accepted decisions, and authorization. Reuse approved requirements and experiences without asking for the same approval again.
+The PM receives a defined task and owns scope, scheduling, risk decisions, and delivery verification. Independent Developers implement. Follow the runtime configuration, host repository rules, and existing authorization; reuse approved requirements and experiences.
 
-This workflow needs independent implementers and reviewers. Check available capabilities before dispatch; record a capacity limitation when they are unavailable, continue useful preparation, and distinguish that work from independent implementation or review.
+Matt owns clarification, specs, and tickets; Developers use its implementation/TDD methods, Reviewers use Standards + Spec, and `pr` / `retro` handle PRs and environment improvements. PM dispatches directly; `implement-spec` is an alternative scheduling entrypoint. Keep imported skills unchanged and host overrides in owned files. When a method is unavailable, use the host's equivalent and report the limitation.
 
-## Establish Scope
+Check independent implementer/reviewer capacity before dispatch; limited capacity permits preparation, not claims of independent implementation or review. At the start, use installed [development-timeline](../development-timeline/SKILL.md) for stage changes and waits, or the host's existing journal/report when unavailable.
 
-- For web work, default to desktop delivery unless the user or approved task includes mobile. Preserve existing commitments and apply the latest explicit scope correction, recording which earlier criteria it supersedes.
-- Before dispatch, reconcile parent and child acceptance criteria, accepted experience, and latest corrections. Identify key failure states and boundaries. Resolve contradictions through existing decisions or a concrete user decision when required.
-- Read the tracker, actual blockers, agents, and Git state. Claim ready implementation issues without an owner. Use one owner, branch, and worktree per issue, with an explicit baseline, public verification entrypoints, and deliverable. Give the Developer the approved artifacts, authorization, and evidence locations.
+## Dispatch and Schedule
 
-## Schedule Fairly
+- Reconcile parent/child acceptance, accepted experience, and latest corrections before dispatch. List key failure states and known verification risks; settle contradictions using existing decisions or a concrete user decision when needed. Desktop web is the default unless mobile is already included. Preserve commitments and record which criteria a later explicit scope correction supersedes.
+- Read the tracker, actual blockers, agents, and Git. Claim ready, unowned implementation issues. Keep one owner, branch, and worktree per issue; give the Developer the baseline, approved artifacts, public verification entrypoints, deliverable, authorization, and evidence locations.
+- Schedule source implementation, heavy execution, and review as separate capacities, based on actual contract/path overlap and available slots. Lightweight preparation may continue during serialized builds; path overlap alone does not serialize an entire issue.
+- Isolate databases, migration identifiers, accounts, ports, build directories, and evidence as well as worktrees. Declare shared services, quotas, and consumers with an owner; assign an integration owner for coordinated registration or generation changes. Follow the host's resource ledger and cleanup policy.
+- Record readiness, last progress, next stage, and a continuation plan before borrowing an implementer. Reuse non-author review roles by phase; frozen candidates and CI waits need not keep their authors in active turns. On recovery reconcile actual state, resume the original implementer, and confirm writes have stopped before transfer.
+- Give maintenance, diagnosis, and review a phase goal and exit condition. Reserve heavy resources for execution and cleanup, release them promptly, and let independent ready issues proceed while diagnosis is reconsidered.
 
-- Treat source implementation, heavy execution, and review as separate capacities. Schedule by actual overlap in responsibilities and contracts and by available slots; lightweight preparation may continue during serialized builds.
-- Isolate databases, migration identifiers, accounts, ports, build directories, and evidence as well as worktrees. Assign an integration owner for coordinated registration or generation changes. Path overlap alone does not require serializing an entire issue.
-- Reuse non-author review roles by phase. An author may finish an active turn once the candidate is frozen or waiting for CI. Record readiness, last progress, and next stage; preserve an issue's continuation plan when borrowing its implementer.
-- Give maintenance, diagnosis, and review a phase goal and exit condition. Hold heavy resource locks during execution and cleanup, release them promptly, and let independent issues proceed while diagnosis is reconsidered.
+## Select Methods When Needed
 
-## Implement, Verify, and Review
+An existing Developer or Reviewer can apply an installed thin skill in their task. Reuse valid evidence; a skill needs neither another Agent nor a new gate. Use host equivalents if unavailable.
 
-When entering verification, review, or difficult diagnosis, read [delivery and rework control](references/delivery.md). Reuse already loaded rules and valid evidence.
+- Shared API, schema, dependency, or resource-ownership changes: use [change-impact](../change-impact/SKILL.md) to identify real consumers and prove the facts the change relies on.
+- Performance claims or comparisons: use [check-benchmark](../check-benchmark/SKILL.md) to check that measurement represents correct, comparable work.
+- Unfamiliar or repeatedly rediscovered verification entrypoints: use [verification-guide](../verification-guide/SKILL.md) to validate and document the existing harness, then reuse the guide.
+- Consequential unresolved designs, repeated failure without new evidence, or review conflicts: read [Advisor consultation](references/advisor.md) and ask a read-only second opinion. PM evaluates the evidence and decides.
 
-1. Developers follow the host implementation process through observable public behavior, with short feedback and test-driven development where applicable. WIP commits and authorized Draft PRs preserve progress; they do not establish completion or authorize merging. Return repairs to the original Developer when available.
-2. Seek early review for an actionable slice or consequential design. A formal review checks acceptance and related boundaries together. Each finding needs a location, falsifiable basis, and acceptance condition; batch compatible repairs.
-3. Follow the host's reviewer policy. When it does not specify a count, use one non-author Reviewer with separate Standards and Spec passes, recording the reduced context independence. Prefer two independent reviewers for permissions, transactions or migrations, recovery or idempotency, complex budget algorithms, broad shared contracts, or milestone integration. Rebalance capacity first; record actual coverage and remaining risk if still limited. An explicit two-reviewer requirement remains binding.
-4. Complete bounded simplification, then validate the stable candidate. Agreed CI may own final full-suite coverage; valid focused local evidence can be reused. After repairs or baseline changes, inspect the semantic delta and refresh affected verification and review coverage.
-5. Before merging, verify the complete candidate, simplification, applicable independent review, and required CI on the final head. Read back the actual merge before updating the tracker. Pending integration remains unfinished.
+## Stabilize and Integrate
 
-## Consult and Diagnose
+For verification, review, or difficult diagnosis, read [delivery and rework control](references/delivery.md). It governs early high-risk checks, reviewer independence, valid evidence, and bounded diagnosis; reuse already read rules.
 
-Consult the configured Advisor or an independent read-only agent for repeated rework without new evidence, architectural trade-offs, or conflicting review findings. Provide the minimum question, contracts, counterexample, and alternatives. Evaluate the recommendation and record the decision; the PM retains scope and judgment responsibility. If the channel is unavailable, record the limitation and continue decisions supported by existing evidence.
+Complete bounded [reduce-complexity](../reduce-complexity/SKILL.md) or the host's equivalent before final validation and independent review. Refresh affected coverage after repairs/baseline movement from the semantic delta. Stable-candidate CI and review may overlap.
 
-Accept a cause-equivalent reproduction when the public failure and observations distinguish the same defect. Match an exact number only when it distinguishes competing causes. Evidence sufficient for an instrumentation repair need not wait for exhaustive upstream investigation. At the diagnostic budget, reconsider the probe, consult, or report the remaining blocker; preserve acceptance assertions and thresholds.
+For GitHub CI, read [the observer contract](references/ci-observer.md) before using `scripts/ci-observer.mjs`; act on changes and failures. The observer reports facts; PM determines required checks from host policy and verifies the final head. When unavailable, use the host's observation process.
 
-## Record, Deliver, and Improve
+Before an authorized merge, verify the complete candidate, simplification, applicable independent review, and required CI on the final head. WIP commits and authorized Draft PRs preserve progress. Completion requires the authorized delivery goal and actual integration: read back the merge, then update the tracker; pending integration stays unfinished.
 
-- Keep the current checkpoint small: authorization and scope, issue and role mappings, revisions, resource owners, recent results, and next steps. Reference separate history and logs. On recovery, reconcile the tracker, Git, agents, and evidence, then resume the original implementer. Confirm writes have stopped before transferring work.
-- At the start, use [development-timeline](../development-timeline/SKILL.md) when available to record dispatch, stage boundaries, waits, role changes, key verification, review rework, and integration. Reuse existing runner records. When installed alone, use a lightweight local journal and delivery report with the same facts; another skill is optional.
-- At delivery, task end, pause, or handoff, update the report with completed and pending work, evidence, blockers, rework causes, and practical improvements. With the timeline helper, generate offline HTML. Report generation adds no merge gate; preserve unknown intervals and use existing evidence.
-- Verify approved real user journeys and the usable application address. Review and survey simplification across the entire milestone baseline to integrated revision, including current consumers. The last issue's diff is insufficient. Optional cleanup remains a proposal.
-- Report actual results and limitations, including partial delivery, pauses, and blockers. Completion follows the authorized delivery goal and tracker evidence, rather than local code or successful test counts. Redact credentials and follow existing authorization for publication and release.
+## Report and Improve
+
+Keep the checkpoint to authorization/scope, roles/issues, revisions, resource owners, results, and next steps; link history/evidence. Reuse runner/observer facts through installed timeline projections. At delivery, task end, pause, or handoff, report completed/pending work, evidence, blockers, rework, and limitations. Reports add no merge gate; retain unknown intervals.
+
+Verify approved real user journeys and the usable application address. At milestone completion, review and survey simplification from the entire milestone baseline to the integrated revision, including consumers. Optional cleanup remains a proposal. Feed the same factual record to Matt `retro` for environment improvements; publication and release follow existing authorization.

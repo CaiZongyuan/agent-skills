@@ -64,3 +64,9 @@ When merging multiple actors' journals, use globally unique ids with an actor, i
 ```
 
 End records retain the start's detail and evidence. Explicit actor, reason, or revision values update those fields; omitted values retain the start's values. An end without explicit confidence inherits the start's confidence; update it explicitly only when supported by new evidence. Orphan ends can become points with a missing-start warning, without inventing a start. A stage registration time may differ from the actual command start; prefer precise runner records when available.
+
+## Optional Manual Checkpoint and CI Composition
+
+A report may include `checkpoint: {authorization,roles,revision,next}`. These human-owned values are preserved as supplied; strings and structured JSON are supported. CI comparison uses only a full 40-character commit SHA in `checkpoint.revision`. Task state, goal, scope, authorization, roles, and next actions are never inferred from machine facts.
+
+Use [composition.md](composition.md) for the `compose-report.mjs` command, optional version-1 CI snapshot contract, and output failure behavior. It merges the same journals as the renderer and produces both a compact `current.md` and the detailed offline HTML from one model. The original `render.mjs` command remains available when only HTML is needed.

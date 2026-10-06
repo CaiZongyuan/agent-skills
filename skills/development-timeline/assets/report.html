@@ -52,12 +52,14 @@ SOFTWARE.
     <button role="tab" id="tab-timeline" aria-selected="true" aria-controls="timeline-panel" data-view="timeline">Delivery and timeline</button>
     <button role="tab" id="tab-causes" aria-selected="false" aria-controls="causes-panel" data-view="causes" tabindex="-1">Causes and rules</button>
     <button role="tab" id="tab-tests" aria-selected="false" aria-controls="tests-panel" data-view="tests" tabindex="-1">Test records</button>
+    <button role="tab" id="tab-ci" aria-selected="false" aria-controls="ci-panel" data-view="ci" tabindex="-1" hidden>CI observations</button>
     <button role="tab" id="tab-evidence" aria-selected="false" aria-controls="evidence-panel" data-view="evidence" tabindex="-1">Evidence and resources</button>
   </nav>
 </header>
 <main>
 <section class="panel" id="timeline-panel" role="tabpanel" aria-labelledby="tab-timeline">
   <div class="summary-line" id="task-summary"></div>
+  <section id="checkpoint-section" hidden><h2>Manual checkpoint</h2><div id="checkpoint"></div></section>
   <div class="toolbar">
     <label>Start UTC<input id="from" type="datetime-local" step="0.001"></label><label>End UTC<input id="to" type="datetime-local" step="0.001"></label>
     <label>Zoom<input id="zoom" type="range" min="1" max="6" step="0.5" value="1"><output id="zoom-value">1×</output></label>
@@ -71,6 +73,12 @@ SOFTWARE.
 </section>
 <section class="panel" id="causes-panel" hidden role="tabpanel" aria-labelledby="tab-causes"><div id="findings"></div><div class="section" id="rules-section"><h2>Rules, execution, and proposals</h2><div class="table-scroll"><table><thead><tr><th>Rule and original text</th><th>Execution and mechanism</th><th>Proposals and retained constraints</th><th>Confidence and evidence</th></tr></thead><tbody id="rules"></tbody></table></div></div></section>
 <section class="panel" id="tests-panel" hidden role="tabpanel" aria-labelledby="tab-tests"><div class="table-scroll"><table><thead><tr><th>Test and time (UTC)</th><th>Method and outcome</th><th>Reason</th><th>Repair and evidence</th></tr></thead><tbody id="tests"></tbody></table></div></section>
+<section class="panel" id="ci-panel" hidden role="tabpanel" aria-labelledby="tab-ci">
+  <div class="summary-line" id="ci-summary"></div>
+  <div id="ci-metadata"></div>
+  <div class="section"><h2>Recorded runs and checks</h2><p class="muted">These are recorded facts, not a required-check or merge readiness decision. Runner start and finish times are separate from observation times.</p><div class="table-scroll"><table><thead><tr><th>Run or check</th><th>Head and attempt</th><th>Last known status</th><th>Runner times (UTC)</th></tr></thead><tbody id="ci-runs"></tbody></table></div></div>
+  <div class="section" id="ci-history-section" hidden><h2>Observation changes</h2><p class="muted">These instants show when changes were observed. They do not measure when the change or a human action began.</p><div id="ci-history"></div></div>
+</section>
 <section class="panel" id="evidence-panel" hidden role="tabpanel" aria-labelledby="tab-evidence">
   <div class="toolbar"><h2 style="margin:0">Evidence index</h2><button class="icon-button" id="download" title="Download report data" aria-label="Download report data"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg></button></div>
   <div class="sources" id="sources"></div><div class="shots" id="shots"></div>
@@ -109,6 +117,21 @@ $('coverage-note').textContent=`${data.metrics.count} ended commands; cumulative
 $('footer').textContent=`Times use UTC. Scope: ${data.scope.platform}${data.scope.mobile?'; mobile scope included':'; mobile product scope excluded'}. Command statistics include only kind=command records with an end; phases, confirmed waits, points, and unknown gaps are excluded. Icons: Lucide (ISC), https://lucide.dev.`;
 const tabs=[...document.querySelectorAll('[role=tab]')];
 if(!data.tests.length)$('tab-tests').hidden=true;
+function structured(value){return value==null?'Unknown':typeof value==='string'?value:JSON.stringify(value,null,2);}
+if(data.checkpoint){$('checkpoint-section').hidden=false;for(const[key,value]of Object.entries(data.checkpoint)){paragraph($('checkpoint'),key,structured(value));}}
+if(data.ci){
+ const ci=data.ci;$('tab-ci').hidden=false;
+ $('ci-summary').textContent=`Current observation: ${ci.observation.status}; evidence freshness: ${ci.assessment.freshness}.\nCandidate relationship: ${ci.assessment.relation}. ${ci.stale?'The rows below are last known facts; the latest observation did not refresh them.':''} ${ci.assessment.relation!=='current'?'These facts do not establish checks for the current candidate.':''}\nTask status stays ${taskLabels[data.task.status]}; required checks are not established by this report.`;
+ const meta=$('ci-metadata');paragraph(meta,'Source',`${ci.source.repo} PR ${ci.source.pr}`);if(ci.source.url)meta.append(link(ci.source.url,'CI source'));
+ paragraph(meta,'CI head',structured(ci.headSha));paragraph(meta,'Candidate revision',structured(ci.assessment.revision));paragraph(meta,'Observed at',fmt(ci.observedAt));paragraph(meta,'Last successful observation',ci.lastSuccessfulAt?fmt(ci.lastSuccessfulAt):'Unknown');
+ if(ci.observation.error)paragraph(meta,'Observation error',structured(ci.observation.error));if(ci.pullRequest)paragraph(meta,'Recorded PR state',structured(ci.pullRequest));
+ function ciRow(record,identity,head,attempt){const row=node('tr'),name=node('td'),candidate=node('td'),state=node('td'),times=node('td');name.append(record.url?link(record.url,identity):node('strong',identity));paragraph(candidate,'Head',structured(head));paragraph(candidate,'Attempt',structured(attempt));state.append(node('p',`${record.status||'unknown'} / ${record.conclusion||'unknown'}`));paragraph(times,'Started',record.startedAt?fmt(record.startedAt):'Unknown');paragraph(times,'Finished',record.completedAt?fmt(record.completedAt):'Unknown');add(row,name,candidate,state,times);$('ci-runs').append(row);}
+ for(const run of ci.runs){ciRow(run,`${run.name} (run ${run.id})`,run.headSha,run.attempt);for(const job of run.jobs)ciRow(job,`Job: ${job.name}`,run.headSha,run.attempt);}
+ for(const check of ci.checks)ciRow(check,`${check.name} (${check.source||'check'})`,check.headSha,null);
+ if(!ci.runs.length&&!ci.checks.length){const row=node('tr'),cell=node('td','No CI records observed. Required checks and passing status are unknown.');cell.colSpan=4;row.append(cell);$('ci-runs').append(row);}
+ if(ci.history.length){$('ci-history-section').hidden=false;for(const item of ci.history)paragraph($('ci-history'),item.at?fmt(item.at):'Unknown observation time',`${item.type}: ${item.observationStatus}; head ${structured(item.headSha)}`);}
+}
+
 if(!data.findings.length&&!data.rules.length)$('tab-causes').hidden=true;
 function view(name){for(const tab of tabs){const selected=tab.dataset.view===name;tab.setAttribute('aria-selected',String(selected));tab.tabIndex=selected?0:-1;$(tab.getAttribute('aria-controls')).hidden=!selected;}}
 for(const tab of tabs){tab.onclick=()=>view(tab.dataset.view);tab.onkeydown=event=>{const visible=tabs.filter(t=>!t.hidden),i=visible.indexOf(tab);let next;if(event.key==='ArrowRight')next=visible[(i+1)%visible.length];if(event.key==='ArrowLeft')next=visible[(i-1+visible.length)%visible.length];if(event.key==='Home')next=visible[0];if(event.key==='End')next=visible.at(-1);if(next){event.preventDefault();view(next.dataset.view);next.focus();}};}

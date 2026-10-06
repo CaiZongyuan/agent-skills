@@ -5,7 +5,7 @@ description: Record development stages and verification evidence, then generate 
 
 # Development Timeline
 
-Show what was delivered, what remains unfinished, where work waited or repeated, and what to change next time. Record stage changes during development and reuse evidence at delivery. Report generation adds no product gate or further development obligation. Write report content in English unless the user requests another language.
+Show what was delivered, what remains unfinished, and where work waited or repeated. Record stage changes during development and reuse evidence at delivery. When Matt's `retro` is used, give it these same records for environment-improvement recommendations and link the decisions back. Report generation adds no product gate or further development obligation. Write report content in English unless the user requests another language.
 
 ## Start and Record Stages
 
@@ -26,6 +26,8 @@ Timestamps default to the actual recording time. Use `--at` for historical times
 ## Report and Attribute
 
 At task or milestone completion, pause, or handoff, update the task status, issue and delivery results, findings, and retained resources, then generate the report. Report failed and partial deliveries as they are, without waiting for every problem to be resolved.
+
+To generate both `current.md` and HTML from the same decisions, journals, and optional CI observations, read [shared-input composition](references/composition.md) and use `scripts/compose-report.mjs`. Keep authorization, scope, and completion as explicit PM input. The composer does not infer them from CI. For a standalone timeline, use the existing renderer below.
 
 ```bash
 node /path/to/development-timeline/scripts/render.mjs \

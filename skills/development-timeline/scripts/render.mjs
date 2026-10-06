@@ -189,6 +189,7 @@ export function normalizeReport(input, options = {}) {
   const rows = (key, mapper) => list(input[key], key).map((item, i) => mapper(record(item, `${key}[${i}]`), i));
   const report = {
     project: text(input.project, 'Project'), title: text(input.title, 'Development timeline'), snapshotAt,
+    ...(input.checkpoint == null ? {} : { checkpoint: record(input.checkpoint, 'checkpoint') }),
     task: { status: choice(task.status, taskStatuses, 'task.status'), goal: text(task.goal), startedAt, ...(endedAt ? { endedAt } : {}) },
     scope: { platform: text(input.scope?.platform, 'desktop-web'), mobile: input.scope?.mobile === true },
     tickets: rows('tickets', (item, i) => ({ id: text(item.id, `ticket-${i + 1}`), title: text(item.title),
@@ -228,7 +229,10 @@ function safeJSON(value) {
 }
 
 export async function renderReport(input, options = {}) {
-  const report = normalizeReport(input, options);
+  return renderNormalizedReport(normalizeReport(input, options));
+}
+
+export async function renderNormalizedReport(report) {
   const template = await readFile(templatePath, 'utf8');
   const replacements = { __REPORT_TITLE__: escapeHTML(report.title), __REPORT_DATA__: safeJSON(report) };
   return template.replace(/__REPORT_TITLE__|__REPORT_DATA__/g, marker => replacements[marker]);

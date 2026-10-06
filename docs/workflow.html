@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Matt 与 PM 开发流程 · 本地第一版</title><style>
+    :root{--paper:#f6f4ef;--surface:#fff;--ink:#202d3b;--muted:#586577;--line:#dfe4e8;--blue:#175a77;--blue-soft:#eaf3f7;--amber:#966014;--amber-soft:#fff3d8;--green:#246a50;--green-soft:#eaf5ee;--red:#a34338;--red-soft:#fff0ed;--radius:18px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI","Noto Sans CJK SC","Microsoft YaHei",sans-serif;font-size:16px;line-height:1.85}
+    a{color:var(--blue);text-underline-offset:4px}button,input{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #eea84d;outline-offset:4px}button:disabled{cursor:default;opacity:.55}h1,h2,h3,h4,p{margin-top:0}h1{font-size:clamp(32px,4vw,48px);line-height:1.3;letter-spacing:-.02em;max-width:850px;margin-bottom:20px}h2{font-size:28px;line-height:1.4;margin-bottom:12px}h3{font-size:21px;line-height:1.5;margin-bottom:10px}h4{font-size:16px;margin-bottom:6px}p{margin-bottom:14px}strong{font-weight:700}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.9em;overflow-wrap:anywhere}pre{padding:18px 22px;border-radius:12px;background:#182936;color:#edf5f8;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7}
+    header{background:#172c3b;color:#f8fbfd;padding:56px 0 44px}header p{color:#d1dce3;max-width:870px}header a{color:#b4e0ed}.wrap{width:min(1160px,calc(100% - 64px));margin:auto}.eyebrow{font-size:13px;letter-spacing:.08em;font-weight:700;margin-bottom:16px}.draft{display:inline-flex;gap:8px;align-items:center;background:#36454c;color:#ffe1a5;border:1px solid #5b6160;border-radius:30px;padding:5px 13px;font-size:13px;margin-bottom:22px}.lead{font-size:19px;line-height:1.85}.header-pills{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px}.header-pills span{font-size:13px;border:1px solid #526675;border-radius:24px;padding:5px 12px}
+    nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}.nav-inner{display:flex;gap:24px;align-items:center;padding:13px 0;overflow:auto;white-space:nowrap}nav a{font-size:14px;text-decoration:none;color:var(--muted)}nav a:hover{color:var(--blue)}main{padding-bottom:36px}section{padding-top:48px;scroll-margin-top:76px}.section-head{max-width:850px;margin-bottom:22px}.section-number{display:block;color:var(--blue);font-size:13px;font-weight:800;letter-spacing:.05em;margin-bottom:8px}.muted{color:var(--muted)}.small{font-size:14px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px}.card p:last-child{margin-bottom:0}.card-label{font-size:12px;font-weight:800;letter-spacing:.05em;color:var(--blue);margin-bottom:8px}.note{padding:17px 21px;border-radius:14px;background:var(--blue-soft);border-left:4px solid var(--blue);margin:20px 0}.note.amber{background:var(--amber-soft);border-color:var(--amber);color:#705024}.note.green{background:var(--green-soft);border-color:var(--green)}.note p:last-child{margin-bottom:0}.example-intro{border-left:5px solid #c8923f;padding:26px 30px;box-shadow:0 7px 25px #1a304908}.talk{display:grid;grid-template-columns:110px 1fr;gap:16px;padding:12px 0;border-bottom:1px solid var(--line)}.talk:last-child{border:0}.talk .speaker{color:var(--blue);font-weight:700}.talk p{margin:0}
+    .flow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin:24px 0}.flow .node{padding:16px 12px;background:white;border:1px solid var(--line);border-radius:12px;position:relative}.node b{display:block;font-size:15px}.node span{display:block;font-size:12px;color:var(--muted);line-height:1.6;margin-top:5px}.node em{display:block;font-size:11px;color:var(--blue);font-style:normal;font-weight:800;margin-bottom:4px}.responsibility{width:100%;border-collapse:collapse;font-size:15px}.responsibility th{text-align:left;color:var(--muted);font-size:13px;background:#edf1f3}.responsibility td,.responsibility th{padding:16px 18px;border-bottom:1px solid var(--line);vertical-align:top}.responsibility tr:last-child td{border:0}.table-shell{overflow:auto;background:white;border-radius:var(--radius);border:1px solid var(--line)}.responsibility td:first-child{width:150px;font-weight:700}
+    .tablist{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:18px}.tablist button,.stage-button{border:1px solid var(--line);border-radius:11px;color:var(--ink);background:white;padding:10px 15px;font-size:14px;text-align:left}.tablist button[aria-selected="true"]{background:var(--blue);color:white;border-color:var(--blue)}.scenario{background:white;border:1px solid var(--line);border-radius:20px;overflow:hidden}.scenario-intro{padding:25px 28px;background:#eef4f7;border-bottom:1px solid var(--line)}.scenario-intro h3{margin-bottom:7px}.scenario-intro p{margin:0}.scenario-layout{display:grid;grid-template-columns:215px 1fr;gap:0}.stages{padding:20px 16px;background:#fafbfc;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:8px}.stage-button{background:transparent}.stage-button[aria-pressed="true"]{border-color:#91bbcd;background:var(--blue-soft);color:var(--blue);font-weight:700}.stage-button small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.step-panel{padding:27px 29px;min-height:370px}.step-title{font-size:24px;margin:8px 0 16px}.step-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.step-tags span{padding:2px 9px;background:#f0f4f6;border-radius:20px;color:var(--muted);font-size:12px}.step-columns{display:grid;grid-template-columns:1fr 1fr;gap:22px}.detail-block{border-top:1px solid var(--line);padding-top:14px}.detail-block h4{color:var(--blue)}.detail-block p{font-size:15px}.decision{background:var(--amber-soft);padding:13px 16px;border-radius:12px;margin-top:12px;font-size:14px}.decision b{color:var(--amber)}.step-nav{display:flex;gap:10px;justify-content:space-between;margin-top:20px}.plain-button{padding:7px 14px;background:white;border:1px solid var(--line);border-radius:8px;color:var(--blue);font-size:14px}.caption{font-size:13px;color:var(--muted);margin-top:12px}
+    details{background:white;border:1px solid var(--line);border-radius:14px;margin:12px 0}summary{padding:18px 22px;cursor:pointer;font-weight:700}details .detail-body{padding:0 22px 22px}details p:last-child{margin-bottom:0}.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;line-height:1.7;background:var(--amber-soft);color:var(--amber);vertical-align:middle;margin-left:8px}.badge.green{background:var(--green-soft);color:var(--green)}.method-grid .card{padding:22px}.method-grid h3{font-size:18px}.method-trigger{font-size:13px;color:var(--blue);margin-bottom:10px}.arrow-line{font-size:14px;padding:14px 18px;background:#edf3f6;border-radius:10px;margin-top:15px;line-height:1.8}
+    .rpm-demo{background:white;border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin-top:22px}.rpm-row{display:flex;gap:24px;align-items:center;margin:14px 0 20px}.rpm-value{font-size:30px;font-weight:750;color:var(--blue);min-width:140px}.rpm-slider{flex:1;accent-color:var(--blue)}.verdicts{display:grid;grid-template-columns:1fr 1fr;gap:14px}.verdict{border-radius:12px;padding:16px 20px;background:#f5f7f8}.verdict b{display:block;margin-bottom:6px}.verdict span{font-size:14px}.verdict[data-result="pass"]{background:var(--green-soft);color:var(--green)}.verdict[data-result="fail"]{background:var(--red-soft);color:var(--red)}
+    .ci-demo{background:white;border:1px solid var(--line);border-radius:var(--radius);padding:25px}.demo-toolbar{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:18px}.demo-toolbar h3{margin:0}.demo-buttons{display:flex;gap:8px}.fact-box{border:1px solid var(--line);border-radius:12px;padding:17px;background:#f8fafb}.fact-box h4{margin-bottom:10px}.fact-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.ci-log{list-style:none;padding:0;margin:18px 0 0;max-height:240px;overflow:auto}.ci-log li{padding:9px 12px;border-bottom:1px solid var(--line);font-size:14px;display:flex;gap:12px;align-items:baseline}.ci-log .seq{font-size:12px;color:var(--muted);min-width:32px}.ci-log li[data-kind="ignored"]{color:#747d85}.ci-log li[data-kind="changed"]{color:var(--blue)}.ci-log li[data-kind="failed"]{color:var(--red)}.ci-log b{font-weight:650}.check-list{padding-left:20px;margin:0}.check-list li{padding:6px 0}.exclude-list{display:grid;grid-template-columns:1fr 1fr;gap:0 30px;margin:0;padding-left:20px}.exclude-list li{padding:7px 0}.footer{margin-top:45px;border-top:1px solid var(--line);padding:25px 0;font-size:13px;color:var(--muted)}
+    @media(max-width:1000px){.flow{grid-template-columns:repeat(3,minmax(0,1fr))}.grid{grid-template-columns:1fr 1fr}.scenario-layout{grid-template-columns:190px 1fr}.wrap{width:calc(100% - 40px)}}
+    @media(max-width:740px){header{padding-top:36px}.grid,.grid.two,.step-columns,.fact-grid,.verdicts{grid-template-columns:1fr}.scenario-layout{grid-template-columns:1fr}.stages{border-right:0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr}.step-panel{padding:22px;min-height:0}.demo-toolbar{align-items:flex-start;flex-direction:column}.exclude-list{display:block}.rpm-row{gap:10px}.rpm-value{min-width:125px}.talk{grid-template-columns:1fr;gap:4px}.flow{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  </style></head><body><header><div class="wrap"><div class="eyebrow">MATT × PM · 本地第一版</div><div class="draft">源码与工具已实现 · 供你检查 · 尚未发布或安装</div><h1>PM 管交付，<br>专业方法各做一件事。</h1><p class="lead">Matt 负责需求与专业开发方法；你的 PM 安排明确任务，三个薄技能完成影响、测量和验证入口工作。Advisor 按需帮助判断，工具保存事实，PM 保留交付裁决。</p><div class="header-pills"><span>6 个技能目录，3 个新方法</span><span>原有 Matt 与项目暂存区保持完整</span><span>教学演示和实际工具证据分开</span></div></div></header><nav aria-label="页面导航"><div class="wrap nav-inner"><a href="#how-to-call">拆分与调用</a><a href="#actual-source">实际技能源码</a><a href="#advisor-explained">Advisor</a><a href="#examples">三个流程例子</a><a href="#automation">工具与事实</a><a href="#install">安装方式</a></div></nav><main class="wrap">  <section id="how-to-call">
+    <div class="section-head"><span class="section-number">实际第一版 · 拆分与调用</span><h2>三个薄技能，各自完成一种工作。</h2><p>下面的技能源文件已写入本地第一版，当前尚未安装或发布。每个技能就是一个包含 SKILL.md 的目录；模型读取其中的指令后完成任务。仅凭新增目录，不会自动启动新 Agent 或运行检查。</p></div>
+    <pre><code>skills/
+├── pm-development/
+│   ├── SKILL.md                 范围、调度、交付 + 按条件指向专业技能
+│   ├── references/advisor.md   已确认的顾问方式
+│   └── scripts/ci-observer.mjs 配套执行工具
+├── change-impact/
+│   └── SKILL.md                 输入变更，输出影响与关键证明
+├── check-benchmark/
+│   └── SKILL.md                 输入测量，输出结论可信度和缺口
+├── verification-guide/
+│   └── SKILL.md                 输入已有环境，输出可执行项目指南
+├── development-timeline/       事实记录和报告，附同源生成工具
+└── reduce-complexity/           已有简化能力</code></pre>
+    <div class="grid two"><div class="card"><h3>每个薄技能写哪些内容？</h3><p><strong>适用条件：</strong>明确什么任务需要它。<br><strong>输入：</strong>从当前任务拿哪些变更、合同或结果。<br><strong>处理：</strong>只写这件工作的特殊方法。<br><strong>输出：</strong>留下能供原流程使用的证据与结论。</p><p>三个技能采用普通可按任务选用的方式。主文件保持聚焦，有需要才附详细方法；不重复抄 PM 的调度规则或 Matt 的开发主流程。</p></div><div class="card"><h3>PM 怎样连接它们？</h3><p>PM 的主文件只保留短条件：共享合同变化时使用 change-impact；要报告性能结论时使用 check-benchmark；运行入口陌生或反复摸索时使用 verification-guide。</p><p>PM 可以让现有 Developer / Reviewer 执行对应工作。只有确需独立判断或可并行任务时才开新 Agent。专业技能结果回到当前任务，没有自己的第二套票状态或合并流程。</p></div></div>
+    <div class="table-shell" style="margin-top:20px"><table class="responsibility"><thead><tr><th scope="col">新增技能</th><th scope="col">你可以直接这样调用</th><th scope="col">完成后得到什么</th></tr></thead><tbody>
+      <tr><td>change-impact</td><td><code>$change-impact 检查当前任务这次事件字段修改，找实际消费者和兼容风险；复用已有证据，只补关键缺口。</code></td><td>受影响的服务、SDK、UI 和生成入口；安全假设的证据或未证状态；最小验证建议。</td></tr>
+      <tr><td>check-benchmark</td><td><code>$check-benchmark 检查这份 200ms→120ms 的报告是否能证明优化；核对脚本、同样工作量、错误、配置和波动。</code></td><td>测量支持的结论，或证据不足的原因。需要补实验时只列与当前结论相关的最小步骤。</td></tr>
+      <tr><td>verification-guide</td><td><code>$verification-guide 整理这个项目已有的启动、健康检查、验证和清理入口；优先复用已有文档，走通一个代表路径。</code></td><td>项目中的操作指南或已有指南链接，以及实际验证和清理结果。不会每张票重新生成。</td></tr>
+    </tbody></table></div>
+    <div class="card" style="margin-top:20px"><h3>仍然只用 PM，也可以这样开始。</h3><pre><code>$pm-development 按已批准任务实现这次事件字段调整；
+核对真实消费者和兼容性，复用已有验证；
+按风险安排独立审查，完成实际集成后给我交付报告。</code></pre><p><strong>PM 的派发：</strong>“Developer，当前票改了共享事件字段。实施前使用 change-impact 查消费者，给出关键兼容假设及证明；既有有效证据直接引用，缺口再补。”</p><p><strong>Developer 的接续：</strong>读取 change-impact 的方法，给出影响结果，然后继续原票实现。改完之后 Reviewer 使用这份证据检查完整候选；它不是一个额外的固定审查回合。</p><p class="small muted">你无需在每次 PM 请求中列出三个技能。普通文案或样式修改不会固定调用全部技能；性能任务才有测量检查，环境入口已经可靠时直接复用指南。</p></div>
+    <div class="note"><p><strong>安装时，同一个仓库带来这些目录。</strong>实现和发布后，使用 <code>npx skills@latest add CaiZongyuan/skills</code> 并选择需要的技能。配合 PM 选用时，README 会列明推荐安装组合；如果某个技能未安装，PM 应说明缺失能力并使用项目已有入口，不把未做的工作写成已完成。</p><p>这次仍保留 Matt 原文件。新增的目录属于你的技能仓库；这一版供你检查职责和调用方式，产品项目的安装副本保持原样。</p></div>
+  </section>
+  <section id="advisor-explained">
+    <div class="section-head"><span class="section-number">先解决疑问 · Advisor 是谁</span><h2>Advisor 是被临时请来帮忙判断难题的顾问。</h2><p>你可以把一次开发看成小团队：Developer 写代码，Reviewer 检查成果，PM 安排交付。卡在一个难题上时，PM 再找一位顾问读证据、提出下一步。</p></div>
+    <div class="grid two">
+      <div class="card"><div class="card-label">一次独立咨询</div><h3>它具体怎样出现？</h3><p>PM 通过 Codex 当前可用的子 Agent 能力开一个独立上下文，要求它只读检查相关代码和证据。顾问返回建议，PM 继续安排实施和验证。</p><p>本次先提供这套调用办法。若当前环境支持指定模型，可以使用可用的更强模型或不同配置；若只有同一个模型，独立上下文仍可用来重新检查假设。</p></div>
+      <div class="card"><div class="card-label">可用能力如实说明</div><h3>要不要装 Cursor Advisor？</h3><p>这版通过你的 PM skill 提供顾问流程，使用现有 Codex 能力。Cursor Advisor 插件提供的是值得借鉴的协议，其原插件仍属于 Cursor。</p><p>如果将来想固定使用 Claude 或 Grok，需要另接实际可用的调用工具和凭据。这个跨厂商接入不属于本次默认方案，也不会凭写一份 Markdown 就出现。</p></div>
+    </div>
+    <div class="table-shell"><table class="responsibility"><thead><tr><th scope="col">角色</th><th scope="col">它回答的问题</th><th scope="col">它留下什么</th></tr></thead><tbody><tr><td>Developer</td><td>怎样把批准的行为实现出来？</td><td>代码、测试和实际验证结果。</td></tr><tr><td>Reviewer</td><td>这个完整候选遵守标准、满足规格吗？</td><td>可定位的缺陷、反例和修复条件。</td></tr><tr><td>Advisor</td><td>我们为什么卡住？下一步该查什么？这个关键方案有什么遗漏？</td><td>短结论、依据、建议实验和未决风险。</td></tr><tr><td>PM</td><td>采纳哪项建议、交给谁、还缺什么、是否已真正交付？</td><td>范围裁决、调度和真实交付结论。</td></tr></tbody></table></div>
+    <div class="card" style="margin-top:20px"><div class="card-label">点击看一轮咨询 · 假设任务</div><h3>“保存一直返回冲突，要不要加三次重试？”</h3><p class="muted small">这是说明职责的假设例子，不代表当前项目发生了这个故障。假设已批准合同是：版本过期时返回 409，并保留用户草稿。</p><div class="tablist" role="group" aria-label="顾问咨询步骤"><button type="button" class="plain-button" data-advice-step="question" aria-pressed="true">1. PM 带什么去问</button><button type="button" class="plain-button" data-advice-step="answer" aria-pressed="false">2. 顾问怎样回答</button><button type="button" class="plain-button" data-advice-step="action" aria-pressed="false">3. PM 接下来做什么</button></div><div class="fact-box" id="advice-demo" aria-live="polite"><h4 id="advice-title"></h4><p id="advice-body"></p><p class="small muted" id="advice-limit"></p></div></div>
+    <div class="note amber"><p><strong>它按风险和卡住程度启用。</strong>普通筛选功能顺利推进时不必咨询；重大接口设计、重复失败又没有新证据、审查意见冲突时才请它。顾问可能判断错误，PM 要用合同和实验证据判断建议是否成立。</p><p class="small">顾问说“可以继续”表示对当前问题的建议。最终成果仍走已有简化、非作者审查、适用验证与实际集成核对。</p></div>
+  </section>
+  <section id="first">
+    <div class="section-head"><span class="section-number">01 · 从你的一句话开始</span><h2>“给资产列表加一个名称筛选。”</h2><p class="muted">以下是说明流程的假设任务，不是本次已实现的产品功能。先看它如何走完，再看每种技能放在哪里。</p></div>
+    <div class="card example-intro">
+      <div class="talk"><span class="speaker">你与 Matt</span><p>确认按名称匹配、清空后恢复完整列表、无结果时显示提示。沿用已批准桌面体验和公开组件测试入口。需求明确后，直接交给 PM；无需为小功能额外造一份 Epic。</p></div>
+      <div class="talk"><span class="speaker">PM</span><p>核对这次范围，交给一名 Developer。确认已有格式、类型和目标行为的检查入口，并安排一名非作者做 Standards 与 Spec 两轴检查。这个任务不需要常驻 Advisor 或多方案竞赛。</p></div>
+      <div class="talk"><span class="speaker">Developer</span><p>使用 Matt 的 implement / tdd：用户输入名称时列表正确变化，先看到目标行为失败，再做最小实现。用已约定的接口验证，不去测试组件内部变量。</p></div>
+      <div class="talk"><span class="speaker">完成时</span><p>做一次适用的小范围简化、固定完整候选、独立审查、确认最终 head 的必需 CI，并核对实际集成。pr 把行为和证据写清楚，timeline 告诉你做完了什么。出现值得学习的问题，再让 retro 从同一记录提出环境改法。</p></div>
+    </div>
+    <div class="note"><p><strong>你只需要在真实产品取舍上决定。</strong>例如“是否改成模糊搜索并匹配标签”扩大了需求，需要你选择；修掉已批准筛选行为的常规错误、复用已有测试入口，不重新问一遍批准。发布、合并沿用本轮已有授权。</p><p class="small">下面的 CI 门禁按所开发项目真实规定的 required checks 执行。通用技能仓库当前没有 CI workflow，这不是给所有仓库新增 CI 的要求，也不表示本次技能改造已经跑过远程 CI。</p></div>
+  </section>
+  <section id="line">
+    <div class="section-head"><span class="section-number">02 · 一条主线，职责有明确归属</span><h2>Matt 负责方法，PM 负责让这次工作顺利交付。</h2><p>PM 从明确任务、批准的体验或已经拆好的票开始。前期还模糊，就回到 ask-matt 对应入口澄清。PM 不再重新访谈，也不重复生成另一份规格。</p></div>
+    <div class="flow" aria-label="第一版开发主线">
+      <div class="node"><em>01 · MATT</em><b>明确要做什么</b><span>澄清、必要原型、规格与垂直票</span></div>
+      <div class="node"><em>02 · PM</em><b>安排能开始的工作</b><span>范围、owner、依赖、资源、风险</span></div>
+      <div class="node"><em>03 · DEVELOPER</em><b>公开行为逐步做通</b><span>implement / tdd、短反馈、早期预审</span></div>
+      <div class="node"><em>04 · REVIEWER</em><b>检查完整候选</b><span>适用简化、独立双轴、受影响复核</span></div>
+      <div class="node"><em>05 · PM + CI</em><b>确认真的集成</b><span>最终 head、必需 CI、实际 merge</span></div>
+      <div class="node"><em>06 · TIMELINE + RETRO</em><b>交付事实与改法</b><span>同源报告、环境改进、有据复盘</span></div>
+    </div>
+    <div class="table-shell"><table class="responsibility"><thead><tr><th scope="col">谁</th><th scope="col">做什么、留下什么</th><th scope="col">什么情况要找你</th></tr></thead><tbody>
+      <tr><td>Matt 前期技能</td><td>ask-matt 选择入口；grill-with-docs 对齐需求；需要看运行结果时才 prototype；大任务由 to-spec / to-tickets 形成可实施合同。</td><td>体验、需求取舍、拆票粒度与真实依赖尚未决定时。</td></tr>
+      <tr><td>PM</td><td>读取批准范围与实际状态；指定执行 owner；区分源码、重型运行、审查容量；只处理变化、失败与交付决定。</td><td>新需求或原合同冲突、授权范围外的动作，或必须由你解决的外部阻塞。</td></tr>
+      <tr><td>Developer</td><td>按 implement / tdd 做公开行为；附定向证据和版本来源；及时指出共享合同、仪器或运行前提问题。</td><td>无法从既有合同判断的产品问题；常规修补由当前授权覆盖。</td></tr>
+      <tr><td>非作者 Reviewer</td><td>分别回答“遵守标准吗”和“满足规格吗”；给定位、反例和修好条件。高风险优先两名独立上下文，容量受限如实说明。</td><td>发现需要产品选择的矛盾；不会为排版偏好或可选重构新增审批。</td></tr>
+      <tr><td>Advisor</td><td>接最小争议、合同、候选和新证据，给判断与下一步。PM 保留裁决和范围责任。</td><td>只有问题仍需要你作选择时；咨询建议本身不是审查通过或 CI 证明。</td></tr>
+      <tr><td>工具与记录</td><td>验证工具保存实际执行/数量/版本/终态；观察器过滤无变化状态；timeline 汇总交付事实；retro 建议改善导航、检查与规则。</td><td>工具不替你批准范围，也不从测试绿色自动判定所有票完成。</td></tr>
+    </tbody></table></div>
+    <details open><summary>新增 implement-spec 与 PM：选一个调度者</summary><div class="detail-body"><p><strong>使用 PM 时，PM 自己安排 Developer，调用 Matt 的 implement / tdd。</strong>不在 PM 下再启动一个 implement-spec 调度层，否则两边都在领取票、推进依赖、安排合并，责任会冲突。</p><p><strong>没有 PM 时，implement-spec 可以独立使用。</strong>它已经能按任务图并行实施，并将结果集中到一个 integration branch。简单的整份 spec 执行可以选这条路；本项目的简化、独立审查、最终 head CI 和 tracker 完成条件仍按项目规则执行。</p><p class="small muted">“集成分支已有提交”“Draft PR 已开”“CI 绿了”和“已实际合入主线”是不同事实。不能把前面任何一个当成后面的证明。</p></div></details>
+    <div class="grid two">
+      <div class="card"><div class="card-label">RETRO × TIMELINE</div><h3>一份证据，两种用途</h3><p>timeline 记录阶段、等待、返工和真实交付结果。retro 看同一记录，判断下一次该改善导航、自动检查、审查标准还是工具。报告可以引用 retro 结论，不再为同一事实手写两份历史。</p></div>
+      <div class="card"><div class="card-label">PR × PM</div><h3>先拿到证据，再组织说明</h3><p>PM / Developer 找出受影响的用户与消费者，并验证。pr 用最小图示、Before / After、可回退性与影响范围写清楚；它不代替调查，也不能给待验证工作写一个“全部通过”。</p></div>
+    </div>
+  </section>
+  <section id="examples">
+    <div class="section-head"><span class="section-number">03 · 选一个场景，看每一步发生什么</span><h2>工作越复杂，检查越针对风险。</h2><p>下面的普通功能与 SSE 是说明性例子；RPM 来自上次复盘，但展示的是“下次如何提前发现”的设计演练。点击场景和阶段，查看 owner、证据和真正需要你的决定。</p></div>
+    <div class="tablist" role="tablist" aria-label="开发场景"><button type="button" id="tab-small" role="tab" aria-selected="true" aria-controls="scenario-panel" data-scenario="small">普通小功能 · 名称筛选</button><button type="button" id="tab-sse" role="tab" aria-selected="false" aria-controls="scenario-panel" data-scenario="sse" tabindex="-1">共享合同 · SSE 重连</button><button type="button" id="tab-rpm" role="tab" aria-selected="false" aria-controls="scenario-panel" data-scenario="rpm" tabindex="-1">历史问题 · 11,985 RPM</button></div>
+    <div class="scenario" id="scenario-panel" role="tabpanel" aria-labelledby="tab-small">
+      <div class="scenario-intro"><h3 id="scenario-title"></h3><p id="scenario-description"></p></div>
+      <div class="scenario-layout"><div class="stages" id="stages" role="group" aria-label="场景阶段"></div><div class="step-panel"><div class="step-tags" id="step-tags"></div><h3 class="step-title" id="step-title"></h3><p id="step-story"></p><div class="step-columns"><div class="detail-block"><h4>这一步留下什么</h4><p id="step-output"></p></div><div class="detail-block"><h4>怎么判断继续</h4><p id="step-exit"></p></div></div><div class="decision"><b>需要你决定的事：</b><span id="step-user"></span></div><div class="step-nav"><button class="plain-button" id="previous-step" type="button">← 上一步</button><span class="small muted" id="step-count" aria-live="polite"></span><button class="plain-button" id="next-step" type="button">下一步 →</button></div></div></div>
+    </div>
+    <div class="rpm-demo"><h3>把“正确实现却被误报”亲手试一下</h3><p class="small muted">简化示意：目标 12,000 RPM，沿用已存在的 50 RPM 容差。这里只演示转速判据，实际温度、计时、身份与结果验收仍须保留。</p><label for="rpm-slider">实际转速（拖动查看两个判据）</label><div class="rpm-row"><output class="rpm-value" id="rpm-value" for="rpm-slider">11,985 RPM</output><input id="rpm-slider" class="rpm-slider" type="range" min="11890" max="12060" step="1" value="11985"></div><div class="verdicts"><div class="verdict" id="rpm-exact" data-result="fail"><b>旧判据：必须精确等于 12,000</b><span id="rpm-exact-text">判为失败，误拒绝合法结果。</span></div><div class="verdict" id="rpm-tolerance" data-result="pass"><b>已有合同：误差在 50 RPM 内</b><span id="rpm-tolerance-text">判为通过，符合既有容差。</span></div></div><p class="caption">先试 11,985，再试 11,949：前者应通过，后者超出 50 RPM。Reviewer 在首个判据成形时核对这类独立反例，避免整批用例复制精确值后才返工。</p></div>
+  </section>
+  <section id="methods">
+    <div class="section-head"><span class="section-number">04 · 借鉴 pstack，把方法接到合适时机</span><h2>专业方法各有入口，只在适用任务中使用。</h2><p>变更影响、测量可信度和验证指南已拆成独立薄技能；PM 根据风险触发。Advisor 沿用已确认方式，审查与设计复用 Matt。</p></div>
+    <div class="grid method-grid">
+      <div class="card"><div class="method-trigger">公共接口、共享依赖、迁移 → 启用</div><h3>change-impact：变更影响</h3><p>先问“这次安全修改，依赖哪个事实成立？”然后找真实消费者、生成入口和运行路径，并用可观察行为证明这个事实。</p><div class="arrow-line">SSE 示例：重连后的事件不丢不乱 → SDK 与 UI 都消费事件 → 服务合同 + SDK 重连 + 真实 UI 行为证据。</div></div>
+      <div class="card"><div class="method-trigger">性能优化或测量异常 → 启用</div><h3>check-benchmark：测量可信度</h3><p>先确认请求执行了真实工作、错误也被统计、测试数据稳定；再检查重复测量与用户路径。测快了一次，不直接声称产品更快。</p><div class="arrow-line">示例：冷启动 200 ms → 120 ms，但请求返回 500。这个数字不能证明优化成功；先恢复正确结果与相同工作量，再比较。</div></div>
+      <div class="card"><div class="method-trigger">验证入口难找或反复摸索 → 启用</div><h3>verification-guide：验证入口</h3><p>把真正已有的启动命令、健康条件、操作入口、证据位置与清理方式整理成一个可复用入口。命令不存在时标成未接入。</p><div class="arrow-line">第一次接手新服务 → 找到隔离数据目录和真实启动入口 → 后续 Developer 直接复用。无需每票再生成一个新技能。</div></div>
+      <div class="card"><div class="method-trigger">高风险候选或审查争议 → 启用</div><h3>高风险审查：复用 code-review</h3><p>让另一个可用模型或独立上下文挑战同一候选，优先问一个明确风险。发现进入既有审查与修补，而不是新增一层“通过章”。</p><div class="arrow-line">示例：作者认定“拒绝后数据不变” → 非作者指出 before 在拒绝后才采样 → 在扩展同类测试前修正判据。</div></div>
+      <div class="card"><div class="method-trigger">架构取舍、反复返工、缺新证据 → 启用</div><h3>短咨询：Advisor</h3><p>带上最小问题、原合同、反例、候选与未决项，请 Advisor 给下一步。后续复用同一咨询，只传新证据；PM 判断是否采纳。</p><div class="arrow-line">“缓存命中数偶发为 1” → 说明原阈值与已做探针 → 咨询机制/区分实验。重跑绿了仍不能声称唯一根因已修复。</div></div>
+      <div class="card"><div class="method-trigger">接口形状未定、需要可运行比较 → 用 Matt</div><h3>多方案设计：沿用已有方法</h3><p>codebase-design 的 Design It Twice 已能比较不同约束的接口；prototype 能回答必须跑起来的问题。architect / arena 的重合部分无需再常驻复制。</p><div class="arrow-line">示例：事件订阅接口到底暴露什么 → 先比较两个不同接口 → 只有运行才能辨别恢复行为时再做小原型。</div></div>
+    </div>
+    <div class="note amber"><p><strong>Advisor 按风险启用，不默认要求跨厂商。</strong>本版提供可用于当前可用模型或子 Agent 的咨询协议。独立上下文与跨厂商模型是两种能力；需要外部模型时按真实可用工具和凭据接入，不能在技能中声称已具备。Advisor 意见不能替代非作者双轴审查、最终 head CI 或实际 merge 核对。</p></div>
+  </section>
+  <section id="automation">
+    <div class="section-head"><span class="section-number">05 · 把重复观察交给工具，把裁决留给 PM</span><h2>CI 变化观察与同源报告：第一版的通用 helper。</h2><p><strong>下面的交互是离线教学演示，不连接 GitHub。实际 helper 已写入本地源码并有受控行为测试；验证结果见交付记录。</strong>本轮更新 PM、配套通用工具和说明；Lab Word 的 TypeScript CI 配置、业务 runner 与产品验证接线另做，不把未实现命令写成现成入口。</p></div>
+    <div class="grid two">
+      <div class="card"><h3>观察器负责“状态有没有变”</h3><p>明确 repo、run / PR、候选 head 和 attempt。内部定期只读观察；仅开始、阶段、结果或版本变化时发出短更新。无变化不重复让 PM 阅读整份 jobs。</p><p>保存失败状态和证据链接；需要诊断时再取得相关原日志。API 出错、取消、超时和 head 更换各自保留真实状态；旧 head 的成功不会被挪到新 head。</p></div>
+      <div class="card"><h3>同一份事实，生成两个视图</h3><p>当前记录回答“现在在哪、谁负责、下一步是什么”；交付 HTML 回答“做完哪些、哪里等、哪里返工”。两者读取同一 CI / 验证事实，避免人手复制版本和数量。</p><p>授权、产品选择、故障归因和完成裁决由 PM 明确记录。工具不能看到绿色就自动写“所有票已完成”。</p></div>
+    </div>
+    <div class="ci-demo" style="margin-top:20px"><div class="demo-toolbar"><div><h3>点几次，看看观察器应该怎么响应</h3><span class="small muted">模拟事件 · 不执行命令，不查询网络</span></div><div class="demo-buttons"><button type="button" class="plain-button" id="ci-reset">重置演示</button><button type="button" class="plain-button" id="ci-next">下一条状态 →</button></div></div><div class="fact-grid"><div class="fact-box"><h4>当前记录</h4><p id="current-fact" class="small"></p></div><div class="fact-box"><h4>交付报告中的同源事实</h4><p id="report-fact" class="small"></p></div></div><ol class="ci-log" id="ci-log" aria-label="模拟观察结果"></ol><p id="ci-counter" class="caption" aria-live="polite"></p></div>
+    <div class="note"><p><strong>时间分别记：</strong>CI runner 完成 → 工具记录结果 → PM 下一动作。缺了哪一个就保留未知。一次 PM 阶段可能同时包含阅读、诊断和等待，不能全部当成 CI 运行、CPU、纯编码或可节省时间。</p><p class="small">减少重复查询不等于 CI 自己跑得更快。效果要看后续可比工作是否减少晚期返工、缩短反馈与获知延迟，以及请求到实际集成的整体经过时间。此时不承诺固定提速比例。</p></div>
+    <details><summary>产品 CI 改造另做，PM 现在怎样给出正确建议？</summary><div class="detail-body"><p>先复用真实存在的格式、lint、类型检查，让便宜错误较早反馈。按实际依赖和隔离条件决定哪些检查可以并行；需要共享构建的消费者用同一候选产物。</p><p>稳定候选的 CI 与正式审查可在条件满足时重叠，不一律先等审查结束。最终仍要求所有适用 required jobs 覆盖最终 head。一组失败时，其他真正独立的组应有机会给自己的结果。</p><p>这些是后续产品任务的验收方向，不是本 HTML 已修改 CI 的结果。迁移后用新栈实测；不能拿历史 Rust job 时长换算成 TypeScript 固定节省。</p></div></details>
+  </section>
+  <section id="boundaries">
+    <div class="section-head"><span class="section-number">06 · 已经排除的事情，继续排除</span><h2>本轮只改你的 PM 与配套能力。</h2><p>这些来自你的本轮要求及上次复盘决定。讨论新整合方式不会把已排除项重新带回范围。</p></div>
+    <div class="card"><ul class="exclude-list"><li>不修改导入的 Matt skills；配置覆盖放在你的 PM 或项目规则中。</li><li>不新增上下文压缩或阶段交接步骤；现有用法照常。</li><li>不改变 worktree 安排，不重拆已批准 issue 或改变票粒度。</li><li>不新增旧 Rust / Docker CI，不为复盘重新修将被移除的旧业务。</li><li>不取消非作者 Standards / Spec 两轴覆盖，不用旧 head 或本地绿色替代最终 head 必需 CI。</li><li>不放宽产品验收、生产预算或已有授权范围；报告不成为额外 merge 门禁。</li></ul></div>
+    <div class="note green"><p><strong>Docker 规则只在真的用 Docker 时适用。</strong>资源所有权、隔离、中断恢复与清理仍按实际运行依赖保留。新栈无 Docker 的日常验证不被旧栈资源清单拖住。</p></div>
+  </section>
+  <section id="install">
+    <div class="section-head"><span class="section-number">07 · 安装后，怎么开始</span><h2>先装 Matt，再装你的补充技能。</h2><p>安装示例来自上游及目标仓库的公开入口。本版尚未安装或发布；README 已说明技能组合和运行依赖。</p></div>
+    <div class="grid two"><div class="card"><h3>安装命令</h3><pre><code>npx skills@latest add mattpocock/skills
+npx skills@latest add CaiZongyuan/skills</code></pre><p class="small muted">按安装器选择项目 / 全局与对应 Agent。已有项目配置无需重新运行 setup-matt-pocock-skills；全新项目且 tracker / 术语 / 文档约定缺失时再配置。</p></div><div class="card"><h3>下一次你可以这样说</h3><p><strong>需求还模糊：</strong>“$grill-with-docs 我要加资产筛选，先把范围和体验说清楚。”</p><p><strong>任务已明确：</strong>“$pm-development 按已批准的票推进；沿用验收与范围，Advisor 在高风险或卡住时启用，最终给我真实交付报告。”</p><p><strong>独立小工作：</strong>ask-matt 可以直接选择 implement；不必为每个小改动组建完整 PM 班组。</p></div></div>
+    <details><summary>“已装好”与“当前能力真的可用”要区分</summary><div class="detail-body"><p>Matt 原文可能写 Skill tool 或特定调度方式；Codex 中由当前技能加载与可用子 Agent 能力等价执行，不假装存在未提供的工具。PM 读取当前运行限制，没有并行能力时按实际容量串行。</p><p>新版 Matt 默认读取 GLOSSARY.md；已有项目若通过 AGENTS / domain 配置指定 CONTEXT.md，继续以项目指定文件为准。此次优化不会顺便迁移项目术语文件。</p><p>通用 helper 的实际代码、定向验证与独立审查证据随第一版保存。项目 CI 的新增入口需要在对应产品任务真正实现和接线后才进入命令清单。</p></div></details>
+  </section><section id="actual-source"><div class="section-head"><span class="section-number">实际源码 · 可审阅的第一版</span><h2>下面展开的是写好的 SKILL.md。</h2><p>这些是生成页面时的源码快照，方便检查职责和篇幅；对应源文件链接才是维护入口。工具说明：<a href="../skills/pm-development/references/ci-observer.md">CI 观察器</a> · <a href="../skills/development-timeline/references/composition.md">同源报告</a>。技能文件为英文，这一页用中文解释实际用法。</p></div><details><summary>pm-development · 实际第一版源码</summary><div class="detail-body"><p><a href="../skills/pm-development/SKILL.md">打开源文件</a></p><pre><code>---
+name: pm-development
+description: Coordinate approved multi-issue or long-running development, owning scope, agent capacity, risk decisions, and evidence for actual integration and delivery.
+---
+
+# PM Development
+
+The PM receives a defined task and owns scope, scheduling, risk decisions, and delivery verification. Independent Developers implement. Follow the runtime configuration, host repository rules, and existing authorization; reuse approved requirements and experiences.
+
+Matt owns clarification, specs, and tickets; Developers use its implementation/TDD methods, Reviewers use Standards + Spec, and `pr` / `retro` handle PRs and environment improvements. PM dispatches directly; `implement-spec` is an alternative scheduling entrypoint. Keep imported skills unchanged and host overrides in owned files. When a method is unavailable, use the host&#x27;s equivalent and report the limitation.
+
+Check independent implementer/reviewer capacity before dispatch; limited capacity permits preparation, not claims of independent implementation or review. At the start, use installed [development-timeline](../development-timeline/SKILL.md) for stage changes and waits, or the host&#x27;s existing journal/report when unavailable.
+
+## Dispatch and Schedule
+
+- Reconcile parent/child acceptance, accepted experience, and latest corrections before dispatch. List key failure states and known verification risks; settle contradictions using existing decisions or a concrete user decision when needed. Desktop web is the default unless mobile is already included. Preserve commitments and record which criteria a later explicit scope correction supersedes.
+- Read the tracker, actual blockers, agents, and Git. Claim ready, unowned implementation issues. Keep one owner, branch, and worktree per issue; give the Developer the baseline, approved artifacts, public verification entrypoints, deliverable, authorization, and evidence locations.
+- Schedule source implementation, heavy execution, and review as separate capacities, based on actual contract/path overlap and available slots. Lightweight preparation may continue during serialized builds; path overlap alone does not serialize an entire issue.
+- Isolate databases, migration identifiers, accounts, ports, build directories, and evidence as well as worktrees. Declare shared services, quotas, and consumers with an owner; assign an integration owner for coordinated registration or generation changes. Follow the host&#x27;s resource ledger and cleanup policy.
+- Record readiness, last progress, next stage, and a continuation plan before borrowing an implementer. Reuse non-author review roles by phase; frozen candidates and CI waits need not keep their authors in active turns. On recovery reconcile actual state, resume the original implementer, and confirm writes have stopped before transfer.
+- Give maintenance, diagnosis, and review a phase goal and exit condition. Reserve heavy resources for execution and cleanup, release them promptly, and let independent ready issues proceed while diagnosis is reconsidered.
+
+## Select Methods When Needed
+
+An existing Developer or Reviewer can apply an installed thin skill in their task. Reuse valid evidence; a skill needs neither another Agent nor a new gate. Use host equivalents if unavailable.
+
+- Shared API, schema, dependency, or resource-ownership changes: use [change-impact](../change-impact/SKILL.md) to identify real consumers and prove the facts the change relies on.
+- Performance claims or comparisons: use [check-benchmark](../check-benchmark/SKILL.md) to check that measurement represents correct, comparable work.
+- Unfamiliar or repeatedly rediscovered verification entrypoints: use [verification-guide](../verification-guide/SKILL.md) to validate and document the existing harness, then reuse the guide.
+- Consequential unresolved designs, repeated failure without new evidence, or review conflicts: read [Advisor consultation](references/advisor.md) and ask a read-only second opinion. PM evaluates the evidence and decides.
+
+## Stabilize and Integrate
+
+For verification, review, or difficult diagnosis, read [delivery and rework control](references/delivery.md). It governs early high-risk checks, reviewer independence, valid evidence, and bounded diagnosis; reuse already read rules.
+
+Complete bounded [reduce-complexity](../reduce-complexity/SKILL.md) or the host&#x27;s equivalent before final validation and independent review. Refresh affected coverage after repairs/baseline movement from the semantic delta. Stable-candidate CI and review may overlap.
+
+For GitHub CI, read [the observer contract](references/ci-observer.md) before using `scripts/ci-observer.mjs`; act on changes and failures. The observer reports facts; PM determines required checks from host policy and verifies the final head. When unavailable, use the host&#x27;s observation process.
+
+Before an authorized merge, verify the complete candidate, simplification, applicable independent review, and required CI on the final head. WIP commits and authorized Draft PRs preserve progress. Completion requires the authorized delivery goal and actual integration: read back the merge, then update the tracker; pending integration stays unfinished.
+
+## Report and Improve
+
+Keep the checkpoint to authorization/scope, roles/issues, revisions, resource owners, results, and next steps; link history/evidence. Reuse runner/observer facts through installed timeline projections. At delivery, task end, pause, or handoff, report completed/pending work, evidence, blockers, rework, and limitations. Reports add no merge gate; retain unknown intervals.
+
+Verify approved real user journeys and the usable application address. At milestone completion, review and survey simplification from the entire milestone baseline to the integrated revision, including consumers. Optional cleanup remains a proposal. Feed the same factual record to Matt `retro` for environment improvements; publication and release follow existing authorization.
+</code></pre></div></details><details><summary>change-impact · 实际第一版源码</summary><div class="detail-body"><p><a href="../skills/change-impact/SKILL.md">打开源文件</a></p><pre><code>---
+name: change-impact
+description: Assess changes to shared APIs, schemas, dependencies, or resource ownership by tracing real consumers and testing the facts required for compatibility and safety.
+---
+
+# Change Impact
+
+Turn “this change is safe because…” into a checkable claim. Use this assessment independently or within the existing Developer/Reviewer task. Reuse valid evidence; the assessment itself adds no merge gate.
+
+## Bound the Candidate
+
+Identify the task, authoritative contracts, baseline, and complete task-owned candidate. Inspect committed changes, staged/unstaged edits, and new files; separate unrelated user work. A branch-to-branch diff alone can omit the proposed change. When ownership or the base is unclear, investigate it before claiming complete coverage.
+
+Use existing repository terminology and architectural decisions. Keep the investigation proportional to the changed boundary.
+
+## Trace and Prove
+
+1. Find the actual callers/readers/writers and entrypoints across the changed contract: exports, schemas, adapters, generated registrations, examples, tests, and external consumers supported by available evidence. Follow relevant references and runtime registration; a text-search miss alone cannot prove no consumers exist.
+2. For each materially affected boundary, state what behavior changes, which consumer relies on it, and the fact required to preserve acceptance or compatibility. Include shared ports, quotas, data, creating processes, and cleanup consumers for ownership changes.
+3. Choose the smallest evidence that distinguishes a safe change from the concrete failure. Reuse public behavior tests, independent expected values, contract checks, representative consumer execution, or current runtime receipts. Static inspection can support static claims; runtime claims need runtime evidence. Label consumers outside available access as unknown.
+4. Report uncovered assumptions and the next discriminating check. A missing proof can motivate a narrower change or additional focused verification within the authorized scope.
+
+Example: renaming an event field is safe only if supported producers and readers agree. Trace serialization, browser decoding, retained fixtures, and any compatibility promise; exercise a representative producer-to-reader path. A green producer unit test alone leaves decoding unproved.
+
+## Result
+
+Return a concise impact note with:
+
+- Baseline/candidate identity and task-owned scope, including new/uncommitted files.
+- Changed boundary → real consumers → affected behavior.
+- Key safety/compatibility facts → evidence and its valid inputs.
+- Unknowns, residual risk, and necessary next checks; distinguish optional improvements.
+
+Attach it to the existing issue, review, or evidence record. On a repair or baseline advance, refresh affected claims from the semantic delta instead of repeating the whole investigation. The note supplies evidence for review and PR explanation; completion remains the host workflow&#x27;s decision.
+
+Method adapted from [pstack blast-radius at df581122](https://github.com/cursor/plugins/blob/df581122cde17e6e27686b5a448bde23e4ad4318/pstack/skills/blast-radius/SKILL.md).
+</code></pre></div></details><details><summary>check-benchmark · 实际第一版源码</summary><div class="detail-body"><p><a href="../skills/check-benchmark/SKILL.md">打开源文件</a></p><pre><code>---
+name: check-benchmark
+description: Evaluate performance claims or benchmark comparisons by checking real work, correct outputs, comparable conditions, measurement scope, and variation.
+---
+
+# Check Benchmark
+
+Assess whether the evidence supports the stated performance claim. Use the existing measurement harness and valid runs before adding work; an existing Developer or Reviewer can perform this check.
+
+## Identify the Claim and Inputs
+
+State the user-relevant operation, baseline/candidate, workload, metric, units, measurement boundary, and acceptance criterion. Identify source/build, dependencies, non-sensitive configuration, environment, and actual run outputs. A local kernel result supports a kernel claim; a user-journey claim needs evidence for the relevant path.
+
+## Inspect the Measurement
+
+- **Real work:** verify that requests/tasks execute, asynchronous work is awaited, and collected samples cover the intended operation. Check actual counts and outputs rather than a harness&#x27;s success label. Elided work, zero samples, or a cached substitute for an uncached workload changes the claim.
+- **Correctness:** inspect errors, rejected/dropped work, timeouts, and output semantics. Throughput cannot count failed work as successful work. Preserve acceptance, order, gaps, and budgets; derive expected results from the contract rather than the returned value.
+- **Comparability:** compare equivalent useful work and data under relevant runtime, build, configuration, concurrency, retention, and cache conditions. Record intentional differences, warm-up/setup/cleanup, background contention, and other limitations.
+- **Instrument:** check clock/units, start and finish boundaries, accumulation/aggregation, and whether instrumentation includes the asserted operation. Readiness predicates and assertions should represent the same contract; dynamic tolerances must admit legal behavior and catch the target defect.
+- **Variation:** inspect repeatability and distribution at the metric&#x27;s relevant scale. Choose additional runs only to answer uncertainty, proportionate to cost and noise; there is no universal run count. Distinguish a real effect from noise, saturation, or a changing workload.
+- **Practical effect:** connect the measured change to the end-to-end path, bottleneck, and any cost or correctness trade-off. State the limited scope when an end-to-end effect is unmeasured.
+
+Example: “12,000 requests/minute” is insufficient if the harness counts rejected requests or compares a warm cache with a cold cache. Check accepted work, errors, equal data, and the contract&#x27;s permitted tolerance before interpreting the rate.
+
+## Result and Next Action
+
+Report whether the evidence supports the claim, supports a narrower claim, or leaves it unproved. Include the observed comparison and variation, correctness evidence, valid inputs, measurement boundary, and residual uncertainty. Link raw receipts rather than copying complete logs.
+
+If a defect is in the instrument, propose a bounded instrument repair and the check that distinguishes its error. Preserve product acceptance and budgets. Repeated identical green runs cannot prove a faulty oracle; a meaningful red/green or counterexample can. Use a new run only when it will resolve a stated question, and refresh only affected evidence after changes.
+
+Method adapted from [pstack benchmark-checklist at df581122](https://github.com/cursor/plugins/blob/df581122cde17e6e27686b5a448bde23e4ad4318/pstack/skills/benchmark-checklist/SKILL.md).
+</code></pre></div></details><details><summary>verification-guide · 实际第一版源码</summary><div class="detail-body"><p><a href="../skills/verification-guide/SKILL.md">打开源文件</a></p><pre><code>---
+name: verification-guide
+description: Discover and validate an existing project&#x27;s launch and public verification entrypoints, then record a reusable guide when agents repeatedly rediscover the environment.
+---
+
+# Verification Guide
+
+Make the existing harness usable without repeated environment exploration. Apply when onboarding to an unfamiliar verification path or when its setup is repeatedly rediscovered. Update the project&#x27;s existing guide; a new ticket does not need a new skill or harness.
+
+## Discover the Existing Path
+
+Read host workflow/testing docs and inspect actual scripts, fixtures, runner help, and CI. Identify what currently exists, what it covers, and what is still planned. Follow the approved scope and public test interfaces; use accepted journeys and an existing actor&#x27;s task.
+
+Map the relevant user behavior to the smallest existing representative verification path. Identify prerequisites, setup cost, current owner of shared services, isolated ports/data/accounts/artifacts, and cleanup responsibility. Credentials are references to approved setup, not values to copy into the guide. Missing entrypoints are gaps to report, not commands to invent.
+
+## Walk It and Record What Works
+
+Prefer inexpensive discovery and health checks before heavy execution. Run a representative authorized path using actual commands:
+
+- **Launch:** required setup, existing startup/fixture entrypoint, target build and environment.
+- **Ready:** observable health, identity, data, or geometry predicate that makes the path runnable.
+- **Drive:** public action or test entrypoint and the behavior it verifies, including a relevant failure boundary when needed.
+- **Evidence:** command/exit, source/build identity, actual coverage and result, raw evidence location, and limitations. Preserve a failed attempt as failed.
+- **Cleanup:** owned resources, active consumers/creators, interruption recovery, and reconciliation outcome according to host policy.
+
+When temporary resources are needed, use the host fixture and ownership ledger, register them before use, and reconcile afterward. Remove only verified owned disposable resources after creators and consumers stop; retain persistent/shared services with owner and purpose. Preserve evidence in the task record. An abnormal exit needs reconciliation before retry.
+
+Example: a browser guide might use the existing development server and smoke-test runner, wait for the seeded user and target scene, exercise save and rejection recovery, keep screenshots/receipts, then clean only its fixture. If the save path is not implemented, state that limitation instead of documenting a fictional passing command.
+
+## Result
+
+Place the concise guide in the existing testing/developer-doc location, or the user-specified path. Point to authoritative scripts and describe operational prerequisites, behavior coverage, evidence, and cleanup that the scripts alone do not explain. Record the revision/environment actually walked and mark unexecuted parts as unverified or blocked.
+
+The guide is usable when another actor can follow its demonstrated path and understand its limits. Report the walkthrough outcome and any missing capability. Reuse it while inputs remain valid; update affected sections when commands, contracts, or environment change. A guide adds navigation and evidence, not another delivery gate.
+
+Method adapted from [pstack create-verification-skill at df581122](https://github.com/cursor/plugins/blob/df581122cde17e6e27686b5a448bde23e4ad4318/pstack/skills/create-verification-skill/SKILL.md); this adaptation produces project documentation rather than a per-feature skill.
+</code></pre></div></details></section><footer class="footer"><p><strong>第一版状态：</strong>源码保存在本地独立分支 draft/pm-thin-skills-20261006。尚未推送到 GitHub、修改产品 CI 或同步项目安装副本。页面的案例是教学演示；真实实现验证和独立审查记录另存。</p><p>方法来源：<a href="https://github.com/mattpocock/skills">Matt skills</a> · <a href="https://github.com/cursor/plugins/tree/df581122cde17e6e27686b5a448bde23e4ad4318/pstack">pstack</a> · <a href="https://github.com/cursor/plugins/tree/df581122cde17e6e27686b5a448bde23e4ad4318/advisor">Advisor</a>。页面显示和交互不依赖网络。</p></footer></main><script>
+  'use strict';
+  const adviceSteps={
+    question:{title:'PM 把一个具体问题交给顾问',body:'合同：旧版本保存应返回 409，草稿保留。现象：连续两次保存返回 409。已有证据：请求中的版本、响应状态、相关日志和代码位置。候选：增加三次重试，或者先查版本为何过期。问题：哪个假设尚未验证，下一步怎样区分原因？',limit:'给相关证据即可。顾问不需要重新扫描整份开发历史。'},
+    answer:{title:'顾问提出可验证的下一步',body:'建议先核对请求提交的版本与服务端当前版本。若版本确实过期，409 符合合同；相同请求重复发送不能证明冲突已解决。再核对界面是否按合同保留草稿并提供重新加载。',limit:'这是基于现有证据的建议，还不是根因已查明，更不是已经修复。'},
+    action:{title:'PM 安排 Developer 验证，继续承担裁决',body:'PM 指定原 Developer 做一次定向检查：证明版本是否过期；验证冲突后草稿仍保留。若证据成立，就修界面恢复路径；若版本并未过期，就带新证据回来缩小下一探针。真正改动仍交给非作者 Reviewer 检查。',limit:'Advisor 不改代码、不替用户决定新产品行为；PM 使用实验证据选择后续动作。'}
+  };
+  function showAdvice(key){const step=adviceSteps[key];document.getElementById('advice-title').textContent=step.title;document.getElementById('advice-body').textContent=step.body;document.getElementById('advice-limit').textContent=step.limit;document.querySelectorAll('[data-advice-step]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.adviceStep===key)));}
+  document.querySelectorAll('[data-advice-step]').forEach(button=>button.addEventListener('click',()=>showAdvice(button.dataset.adviceStep)));
+  showAdvice('question');
+
+  const stageNames=['接明确任务','首个片段与预审','实施与短反馈','固定候选与审查','CI 与实际集成','报告与环境复盘'];
+  const scenarios={
+    small:{title:'普通小功能：按名称筛选资产',description:'假设任务：沿用批准的桌面列表，不改数据协议、不新增持久偏好。用现有公开组件入口验证，不额外造大型计划。',steps:[
+      {title:'先确认明确范围，轻量安排',owner:'PM',risk:'低风险 · 无须常驻 Advisor',story:'Matt 已经明确匹配、清空与空结果行为。PM 读取这份合同和已有项目入口，指定一名 Developer；如果是独立小任务，ask-matt 也可以直接走 implement，不要求每次建立 Epic。',output:'批准范围、现有公开测试接口、源码 owner、基线与可用验证入口。记录需要的内容，不复制整份规格。',exit:'需求没有矛盾、当前票可启动且无人拥有。已批准 seam 直接复用。',user:'如果已有体验说清楚了，这一步继续；若想新增模糊匹配或标签搜索，请你先决定新增范围。'},
+      {title:'首个行为尽快做通，预审按风险安排',owner:'Developer + 非作者 Reviewer',risk:'低风险 · 复用已有标准',story:'先让“输入名称后列表变化”这一公开行为红/绿。常规筛选沿用现有模式；不为了流程形式开一次架构竞赛。若发现共享选择状态会被清空，及早请非作者检查这个影响。',output:'首个有效行为的 red/green，以及确有风险时的小范围预审发现。',exit:'测试断言来自批准行为；编译失败或零测试收集不被算作业务 red。',user:'常规修复无需重新批准；需要改变已有选择语义时才请你判断。'},
+      {title:'逐行为实现，先跑便宜反馈',owner:'Developer',risk:'implement / tdd',story:'接着完成清空和无结果提示。使用已有格式、类型与目标场景检查；只改文案或样式时复用适用检查，不新增与实现一模一样的测试。',output:'完整行为、相关文档与定向验证。WIP commit / 已授权 Draft PR 可记录进展，并如实标明待验证内容。',exit:'批准用户路径已经可操作，关键失败行为有真实证据。Draft 存在不等于任务完成。',user:'实施细节由 Developer 处理；扩大需求或越出原授权时再找你。'},
+      {title:'简化一次，再检查完整候选',owner:'Developer + 非作者 Reviewer',risk:'Standards / Spec 分开覆盖',story:'行为稳定后做适用的局部简化；无可改善处也可以。固定包括新增文件在内的完整候选，由非作者分别检查标准与规格。有效发现成组修，原 Reviewer 复核受影响变化。',output:'简化结果、完整候选标识、双轴发现和修补状态。',exit:'必需发现解决，可选重构留下提案；不为同一未变化内容反复清理和招募 Reviewer。',user:'常规修补继续；只有发现真正产品冲突时需要你裁决。'},
+      {title:'最终 head 的必需 CI 成功，核对真的合并',owner:'PM + CI',risk:'最终版本核对',story:'本地目标场景证据可以复用，完整覆盖交给约定 CI。稳定候选的 CI 与审查可适当重叠。合并前核对简化、审查、required jobs 和真实 head；在已有授权内实际 merge 后再更新 tracker。',output:'最终 head 的 CI 事实、实际集成版本、已完成与待完成票。pr 用这些证据写 Before / After。',exit:'不能用旧 head 绿色、新 Draft 或只在本地通过替代实际集成。',user:'沿用已授权发布/合并；未授权或存在真实范围变动时再交给你。'},
+      {title:'一次交付记录，必要时做环境复盘',owner:'PM + timeline + retro',risk:'报告不新增门禁',story:'timeline 从同一事实源写清楚已交付内容、限制与必要等待。若有值得学习的错误，retro 用这些记录判断能否变成自动检查、导航或审查标准。普通顺利任务不强迫凑满“改进十条”。',output:'可打开的交付 HTML 与应用地址；需要时附有证据的环境改进建议。',exit:'完成/未完成如实区分；未知时长保留未知，不为图表重跑产品。',user:'环境建议涉及新的工作范围时由你选；报告生成本身不改变已完成票。'}
+    ]},
+    sse:{title:'共享合同变化：SSE 断线后的事件续传',description:'示例假设：验收已经约定身份、顺序、重连与恢复行为。具体数值、事件语义及消费者以实际项目合同为准。',steps:[
+      {title:'先找真正共享的合同与 owner',owner:'PM',risk:'共享接口 · blast-radius',story:'服务端、SDK 和 UI 都读取同一事件。PM 先核对票的真实 blockers，再指定共享合同/生成入口 owner，说明数据目录、端口、账号和限流配额如何隔离；不能只因为在不同 worktree 就认为运行已隔离。',output:'批准合同、实际消费者、共享入口 owner、当前基线、运行隔离条件。',exit:'列清“安全修改依赖哪些事实”：例如重连不重复提交动作、顺序不被客户端排序掩盖、拒绝身份不读取事件。',user:'断线后允许重新加载还是必须无缝续传，若规格未决定才需要你选择；已决定则直接复用。'},
+      {title:'先给独立 Reviewer 一个可操作片段',owner:'Developer + Reviewer',risk:'独立预审 · 必要时 Advisor',story:'首个重连路径成形时检查一个断线反例：恢复的事件是否有缺口、重复或顺序颠倒？期望序列来自合同或已知输入，不从服务器响应复制一份再排序。高风险合同优先独立双上下文覆盖。',output:'一个最小重连演练、独立期望、有效 red/green、被证实或仍未决的设计风险。',exit:'安全事实能被公开行为区分；争议持续或缺新证据时，Advisor 只咨询这一条合同与候选。',user:'需要改恢复语义或持久化承诺时找你；Reviewer 的常规发现不另设批准。'},
+      {title:'实现可以并行，运行按真实容量安排',owner:'PM + 各 Developer',risk:'同一调度 owner',story:'独立消费者可以准备和实现；共享生成入口由指定 owner 集成。重型运行按可用端口、配额和数据隔离安排，不把一次构建串行扩大成固定源码写入者数量。等 CI 的作者可以结束活跃 turn，PM 保留原票接续安排。',output:'消费者修改、生成产物、服务/SDK/UI 的定向行为证据，实际版本与资源 owner。',exit:'合同 owner 与消费者一致；每次运行后资源归属可核对。PM 不再嵌套 implement-spec 调度队伍。',user:'无需为并行本身批准；新增依赖或改变业务范围时找你。'},
+      {title:'完整候选包含所有消费者',owner:'Developer + 独立 Reviewer',risk:'风险适配审查',story:'先简化任务范围内的实现，再固定候选。Standards 看边界、恢复、ownership；Spec 看批准的重连与身份路径。发现有效风险后成组修复，保留原 Reviewer 的未变覆盖。',output:'包含服务、SDK、UI 和生成文件的完整候选；双轴审查与修补；消费者覆盖引用。',exit:'共享接口缺陷解决；可选架构重构留下提案，不按删行目标阻塞交付。',user:'发现两个批准合同互相矛盾时请你决定；常规合同漂移修补继续。'},
+      {title:'基线或 head 前进，先判断语义变化',owner:'PM + CI + Reviewers',risk:'刷新受影响覆盖',story:'新基线若改变权限、事件序列或共享依赖，刷新对应消费者验证与审查。只是新增无关文档，不自动宣布所有旧证据失效。最终 head 的 required CI 仍必须成功；复杂影响无法界定时补完整验证。',output:'语义 delta、复用和刷新覆盖的理由、最终 head CI、实际 merge 与 tracker 状态。',exit:'完整候选的关键消费者有覆盖；旧 head 成功只证明旧输入，不伪装新结果。',user:'已有授权内继续；新的产品冲突或外部阻塞才找你。'},
+      {title:'报告真实交付，复盘重复模式',owner:'PM + timeline + retro',risk:'事实与建议分开',story:'报告解释哪些消费者已集成、剩余风险及实际等待。如果多个 Developer 反复摸索同一启动入口，retro 建议改善导航；如果重复遗漏消费者，考虑可运行的合同检查，而不是再增加一段模糊提醒。',output:'同源交付 HTML、必要的环境改法及证据来源。',exit:'没有将某一消费者本地通过写成全部已交付，也没有把并行墙钟累加成总耗时。',user:'可选 follow-up 由你选择；本次已交付范围按真实状态结束。'}
+    ]},
+    rpm:{title:'历史判据问题：合法 11,985 RPM 被精确 12,000 拒绝',description:'上次复盘已证实：生产有 50 RPM / 0.5°C 容差，但测试入口要求精确值。下面演示未来如何在首例预审时提前发现，不重新修旧栈。',steps:[
+      {title:'将已知风险带入开工核对',owner:'PM + Developer',risk:'判据 / 测试前提已知风险',story:'开工读取已有合同和已知风险：动态值有容差；容量样本的时间前缀可能自然过期；共享身份/限流可能干扰整组运行。只整理影响当前新栈任务的风险，不为了复盘重跑将被删除的旧业务。',output:'每项风险的失败签名、最小入口、分类、已知修法、未证项与退出条件。',exit:'明确哪个是产品行为，哪个是测试判据或前提问题。未实现的新栈入口仍标成待接入。',user:'若已有容差明确就不再请你批准；需要变更业务容差才找你。'},
+      {title:'在第一条判据上做独立反例检查',owner:'Developer + 非作者 Spec Reviewer',risk:'首类高风险 oracle 预审',story:'Reviewer 对照权威合同：12,000 是目标，不代表任何瞬间必须精确等于它。用独立字面例子核对 11,985 合法、11,949 越界，同时保留温度、计时、结果与身份要求。还要检查 before 是否在拒绝前取、数组顺序是否被排序掩盖。',output:'首例判据、来自合同的独立期望、能拒绝错误实现和接受正确实现的最小反例。',exit:'合法动态结果通过，越界值失败；已有有效 TDD red/green 可复用，不为同一个命题做全量 mutation。',user:'无需每条测试审批；Reviewer 忠实翻译既有合同即可。'},
+      {title:'修判据或前提，不改生产预算求绿',owner:'原 Developer',risk:'保持原验收',story:'如果证据证明实现正确而判据错误，就做有界仪器修复。容量测试先稳定测试样本，不与“真实默认过期裁剪”的独立行为混为一谈。缓存偶发失败若原因未唯一证明，保留未证状态；Advisor 帮选择下一探针。',output:'最小修补、判据/前提与产品变化的区别、原始失败和新结果、实际收集/过滤数量。',exit:'每次重试回答一个未决问题；诊断预算耗尽转向或咨询，不能降低阈值、跳过原断言或自动通过。',user:'常规可靠仪器修复继续；必须改变生产预算或验收才需要你决定。'},
+      {title:'先定向回归，再复核语义 delta',owner:'原 Developer + 原 Reviewer',risk:'复用未变覆盖',story:'历史最终修补曾只运行受影响 DEVICE-04，其余五条明确过滤，完整覆盖交给新 head CI。未来同样先跑真正受影响入口，再让原 Reviewer 检查判据与同类边界；不要把过滤数量算成通过数量。',output:'实际执行测试 ID、通过/失败/过滤数、测试源码与目标构建来源、Reviewer 增量意见。',exit:'关键判据有效；未变计时/结果等证据有来源和适用性。只见单测绿还不能宣布全套完成。',user:'已有合同内的增量复核直接继续，不重复要求批准同一修法。'},
+      {title:'新候选需要自己的最终 CI',owner:'PM + CI',risk:'final-head 必需覆盖',story:'修补后 head 改变，required CI 必须属于新 head。其他未受影响的本地证据按代码、合同、依赖、环境与覆盖判断能否复用。head 只是换了标识不自动让所有本地证据失效；但旧 CI 不能冒充最终 head。',output:'新 head 完整 CI、适用审查与简化覆盖、实际集成状态。已知夹具风险有处理结论。',exit:'所有 required jobs 真实收集并成功；运行和清理终态可核对；实际 merge 后再更新票。',user:'沿用已有集成授权；剩余问题必须由你改变范围才能解决时才请你裁决。'},
+      {title:'复盘促使错误更早暴露',owner:'PM + timeline + retro',risk:'不承诺减少固定分钟数',story:'timeline 将返工标为判据、测试前提、产品、CI 环境或未证原因。retro 再决定：机械的版本/数量/终态适合工具核对；容差、顺序、拒绝前后等语义由非作者判断。目标是首例及早发现，而不是取消最终独立审查。',output:'事实一致的报告、首例预审方法、可操作的自动化或审查改进。',exit:'有证据才能说改善；历史 CI 用时不能直接换算未来新栈节省。未知间隔仍未知。',user:'新的环境建设建议在新范围内选择；本页演练不等于这些工具已经交付。'}
+    ]}
+  };
+  let activeScenario='small',activeStep=0;
+  function renderScenario(){
+    const scenario=scenarios[activeScenario],step=scenario.steps[activeStep];
+    document.querySelectorAll('[data-scenario]').forEach(button=>{const selected=button.dataset.scenario===activeScenario;button.setAttribute('aria-selected',String(selected));button.tabIndex=selected?0:-1;});
+    document.getElementById('scenario-panel').setAttribute('aria-labelledby','tab-'+activeScenario);
+    document.getElementById('scenario-title').textContent=scenario.title;document.getElementById('scenario-description').textContent=scenario.description;
+    const stages=document.getElementById('stages');stages.replaceChildren();
+    stageNames.forEach((name,index)=>{const button=document.createElement('button');button.type='button';button.className='stage-button';button.setAttribute('aria-pressed',String(index===activeStep));button.textContent=String(index+1).padStart(2,'0')+' · '+name;const caption=document.createElement('small');caption.textContent=scenario.steps[index].owner;button.append(caption);button.addEventListener('click',()=>{activeStep=index;renderScenario();document.querySelectorAll('.stage-button')[index].focus();});stages.append(button);});
+    const tags=document.getElementById('step-tags');tags.replaceChildren();[step.owner,step.risk].forEach(label=>{const span=document.createElement('span');span.textContent=label;tags.append(span);});
+    ['title','story','output','exit','user'].forEach(field=>document.getElementById('step-'+field).textContent=step[field]);
+    document.getElementById('previous-step').disabled=activeStep===0;document.getElementById('next-step').disabled=activeStep===stageNames.length-1;document.getElementById('step-count').textContent=(activeStep+1)+' / '+stageNames.length+' · '+stageNames[activeStep];
+  }
+  document.querySelectorAll('[data-scenario]').forEach(button=>{
+    button.addEventListener('click',()=>{activeScenario=button.dataset.scenario;activeStep=0;renderScenario();});
+    button.addEventListener('keydown',event=>{const buttons=[...document.querySelectorAll('[data-scenario]')],index=buttons.indexOf(button);let target;if(event.key==='ArrowRight')target=(index+1)%buttons.length;else if(event.key==='ArrowLeft')target=(index+buttons.length-1)%buttons.length;else if(event.key==='Home')target=0;else if(event.key==='End')target=buttons.length-1;else return;event.preventDefault();buttons[target].click();buttons[target].focus();});
+  });
+  document.getElementById('previous-step').addEventListener('click',()=>{activeStep--;renderScenario();});document.getElementById('next-step').addEventListener('click',()=>{activeStep++;renderScenario();});
+  function renderRpm(){const value=Number(document.getElementById('rpm-slider').value),exact=value===12000,tolerance=Math.abs(value-12000)<=50;document.getElementById('rpm-value').value=value.toLocaleString('en-US')+' RPM';document.getElementById('rpm-exact').dataset.result=exact?'pass':'fail';document.getElementById('rpm-tolerance').dataset.result=tolerance?'pass':'fail';document.getElementById('rpm-exact-text').textContent=exact?'判为通过。':tolerance?'判为失败，误拒绝合法结果。':'判为失败，但它未正确表达容差。';document.getElementById('rpm-tolerance-text').textContent=(tolerance?'判为通过':'判为失败')+'；距目标 '+Math.abs(value-12000)+' RPM，'+(tolerance?'在已有容差内。':'超出已有容差。');}
+  document.getElementById('rpm-slider').addEventListener('input',renderRpm);
+  const ciEvents=[
+    {kind:'changed',label:'初始状态',text:'候选 A · attempt 1 · 运行中。进入事实记录。',head:'A',attempt:1,state:'运行中',next:'等待真实阶段/结果变化。'},
+    {kind:'ignored',label:'无变化',text:'仍是 A / attempt 1 / 运行中。内部观察，不重复通知 PM。'},
+    {kind:'changed',label:'阶段变化',text:'A / attempt 1 进入合同检查。保存阶段事实并发一次短更新。',head:'A',attempt:1,state:'合同检查运行中',next:'其他独立准备继续；不重新查询整份历史。'},
+    {kind:'failed',label:'失败',text:'A / attempt 1 失败。保存失败回执和日志入口；工具不替 PM 判断根因。',head:'A',attempt:1,state:'失败',next:'PM 判断失败类别与下一探针。'},
+    {kind:'changed',label:'新的 attempt',text:'A / attempt 2 开始。与 attempt 1 结果分开记录。',head:'A',attempt:2,state:'运行中',next:'原失败仍保留；本次尚未证明通过。'},
+    {kind:'changed',label:'候选更新',text:'修补产生候选 B。最终 head 覆盖尚待本候选 CI。',head:'B',attempt:null,state:'等待本 head 的 CI',next:'保留适用定向证据；观察 B 的必需检查。'},
+    {kind:'ignored',label:'旧 head 结果',text:'A / attempt 2 成功，只属于 A。归档旧事实，不把 B 写成通过。'},
+    {kind:'changed',label:'新 head 开始',text:'B / attempt 1 运行中。绑定当前候选。',head:'B',attempt:1,state:'运行中',next:'等待 B 的真实结果。'},
+    {kind:'observation-error',label:'API 暂时出错',text:'无法取到新状态。首次错误通知 PM，标记观察失败；最后已知 CI 状态仍保留，不能据此判断当前状态。'},
+    {kind:'changed',label:'最终 head CI 通过',text:'B / attempt 1 的必需检查成功。仍需简化、审查与实际集成核对。',head:'B',attempt:1,state:'必需检查成功',next:'PM 核对已有授权与其他门禁；本演示没有实际 merge。'}
+  ];
+  let ciIndex=0,ciFact={head:'A',attempt:1,state:'运行中',next:'等待真实阶段/结果变化。'};
+  function renderCi(){
+    const log=document.getElementById('ci-log');log.replaceChildren();ciFact={head:'A',attempt:1,state:'运行中',next:'等待真实阶段/结果变化。'};
+    ciEvents.slice(0,ciIndex+1).forEach((event,index)=>{if(event.head)ciFact={head:event.head,attempt:event.attempt,state:event.state,next:event.next};const row=document.createElement('li');row.dataset.kind=event.kind;const seq=document.createElement('span');seq.className='seq';seq.textContent=String(index+1).padStart(2,'0');const message=document.createElement('span');const label=document.createElement('b');label.textContent=event.label+' · ';message.append(label,document.createTextNode(event.text));row.append(seq,message);log.append(row);});
+    document.getElementById('current-fact').textContent='模拟候选 '+ciFact.head+' · '+(ciFact.attempt===null?'暂无 attempt':'attempt '+ciFact.attempt)+' · '+ciFact.state+'。下一步：'+ciFact.next;
+    document.getElementById('report-fact').textContent='同源读取：候选 '+ciFact.head+'，'+(ciFact.attempt===null?'尚未有本 head 的 CI':'attempt '+ciFact.attempt)+'，状态“'+ciFact.state+'”。集成状态：本演示未集成。CI 完成到 PM 下一动作的真实耗时：未知。';
+    const seen=ciEvents.slice(0,ciIndex+1),changes=seen.filter(event=>event.head).length;document.getElementById('ci-counter').textContent='已演示 '+seen.length+' 条观察，其中 '+changes+' 条更新 CI 事实。观察错误单独通知，重复无变化留在工具中；旧 head 不变成当前候选成功。';document.getElementById('ci-next').disabled=ciIndex===ciEvents.length-1;log.scrollTop=log.scrollHeight;
+  }
+  document.getElementById('ci-next').addEventListener('click',()=>{if(ciIndex<ciEvents.length-1){ciIndex++;renderCi();}});document.getElementById('ci-reset').addEventListener('click',()=>{ciIndex=0;renderCi();});
+  renderScenario();renderRpm();renderCi();
+</script></body></html>

@@ -1,50 +1,43 @@
 # Delivery and Rework Control
 
-Use these decision criteria within the host repository's workflow. The user's explicit scope, runtime constraints, and host rules take precedence. No separate implementation, testing, review, or diagnosis skill is required.
+Apply these coordination criteria within the host's implementation, testing, review, and diagnosis methods. User scope, runtime constraints, and host rules take precedence.
 
-## Select Verification by Risk and Change
+## Early Evidence and Stable Candidates
 
-Before implementation, identify key invariants and relevant boundaries, such as precision, ties, budgets, or retention. Test-driven implementation can proceed one behavior at a time after this design check.
+At dispatch, make known verification risks actionable: failure signature, smallest existing entrypoint, relevant preconditions, tried remedies, unknowns, and an exit condition. Separate a fixture's stable capacity workload from a product's real retention behavior. Verify shared runtime assumptions in the first integrated batch while repairs are cheap.
 
-- During editing, use focused public behavior, type, and static checks. Run the complete gate on a stable candidate in the responsible environment, which may be CI.
-- Use falsifiable acceptance assertions and verify that important checks distinguish correct behavior from the target defect. An existing TDD red/green can provide this evidence when it fails for the right reason. Add a counterexample when the oracle changes or a key risk lacks coverage.
-- When a complete gate already includes an affected suite, cite its coverage rather than immediately repeating it.
-- Judge evidence reuse by the complete revision, contracts, dependencies, environment, and actual coverage. Inspect semantic changes when the integration baseline advances. A changed commit identifier alone does not invalidate every check; unchanged files alone do not prove validity.
-- Required final-head CI remains mandatory. Zero collected tests, skipped scenarios, broken locators, or compilation failures do not establish the target business behavior.
-- Classify commands by actual resource use. Documentation or contract checks may invoke a compiler and need the heavy execution queue. Use existing commands rather than inventing unimplemented fast modes.
+For a high-risk oracle or consequential design, get a bounded non-author check of the first actionable example before expanding the pattern. Inspect the authoritative contract, an independent expected result, and the smallest counterexample that would catch a wrong implementation or reject a legal one. This applies especially to dynamic tolerances, rejection/recovery, ordered results, gaps, time, and rate-limit preconditions. Reuse valid TDD red/green evidence; add a counterexample when the oracle changes or a key risk lacks coverage.
 
-## Verify UI and Browser Behavior
+Use existing low-cost formatting, type, static, and focused public-behavior checks during editing. Classify cost by actual execution: a documentation check can invoke a compiler. Run full coverage on the stable candidate in the responsible environment, which may be agreed CI. Independent groups may run concurrently when their actual dependencies and resources permit it; every required group still needs a result.
 
-Apply the approved viewport and journey scope. Desktop web is the default only when mobile has not been included. Preserve existing unrelated test responsibilities without creating new mobile delivery obligations.
+Record source/test tree, target build, command, non-sensitive environment/dependencies, actual test coverage, exit and cleanup status, and evidence paths using the existing runner's receipts. Identify uncommitted inputs when present. Zero collected tests, skipped target scenarios, broken locators, or compilation failures leave the target behavior unverified.
 
-Before reserving real execution resources, check discovery, actual identity, target state, component actions, and rendering prerequisites. Wait on a business or geometry predicate for dynamic UI rather than a fixed sleep or stale rectangle.
+Reuse coverage by examining the complete candidate, contracts, dependencies, environment, and semantic delta. A different commit alone does not invalidate every check; unchanged source alone does not establish valid runtime evidence. Cite an existing complete gate's affected coverage instead of immediately repeating it. Required final-head CI remains binding.
 
-Cover new critical paths with the real business journey. Use focused scenarios for layout, copy, or selector changes. Reuse unaffected identity, backend, and documentation evidence according to their valid inputs.
+## Browser Journeys
 
-Judge visibility by what a user can see and operate. A canvas, a visible DOM element, or a colored cropped screenshot alone cannot prove panels leave the content exposed. Record relevant screenshots and external geometry or hit testing. Give failed scenarios unique evidence paths and redact sensitive fields.
+Use the approved viewport and journey scope. Before reserving execution resources, inspect discovery, identity, target state, component actions, and rendering prerequisites. Dynamic UI readiness follows a business or geometry predicate rather than a fixed sleep or a stale rectangle.
 
-## Review and Repair
+Cover critical paths through the real business journey; use focused scenarios for layout, copy, or selector changes and reuse unaffected evidence. Visibility means the user can see and operate the content. Relevant screenshots plus geometry or hit testing can distinguish an exposed scene from a canvas covered by panels. Keep failed-scenario evidence separate and redact sensitive fields.
 
-Review consequential design and specification risks while changes are cheap. Formal review pins the base and complete candidate, including new files and necessary consumers. Use a commit or explicit tree comparison that includes uncommitted work.
+## Independent Review and Repair
 
-Follow the host review policy and any explicit reviewer count. Otherwise, one non-author may report Standards and Spec separately; two independent contexts are preferable for high-risk or milestone work when available. Reuse unchanged coverage and review roles. Record capacity limits, actual independence, and remaining risk.
+Pin the base and complete task-owned candidate, including consumers, new files, and uncommitted changes. Follow the host's reviewer policy and explicit reviewer count. Otherwise, one non-author reports Standards and Spec separately; record its reduced context independence. Prefer two independent reviewers for permissions, migrations/transactions, idempotency/recovery, complex budget algorithms, broad shared contracts, and milestone integration. Rebalance capacity first; if still constrained, record actual coverage and remaining risk. Author self-review cannot provide independent coverage.
 
-After repairs, check related boundaries and refresh affected verification and review in a batch. Repeated rounds without new evidence or with the same class of defect warrant a short design check or Advisor consultation. A retry limit is a stopping condition, never an automatic pass.
+The review method comes from installed Matt `code-review` or the host's equivalent. For high risk, use the existing reviewers to challenge concrete assumptions and seek counterexamples; another mandatory review round or cross-vendor model is unnecessary. Formal review checks acceptance and related boundaries together. Each defect needs a location, falsifiable basis, and acceptance condition; optional style preferences and large refactors stay separate.
 
-Separate optional smells, formatting preferences, and large refactor proposals from located contract defects or actual risks. Optional cleanup does not block delivery by itself.
+Batch compatible repairs with the original Developer when available. Refresh affected verification and independent review on the complete repaired candidate, reusing unchanged coverage and roles. Repeated rounds with no new evidence, a recurring defect class, or conflicting findings trigger [Advisor consultation](advisor.md). A retry limit prompts reconsideration; it cannot establish a pass. Complete simplification before final validation and formal review; reuse it while its inputs remain valid. Stable-candidate CI can overlap review.
 
-## Diagnose with Sufficient Evidence
+## Bounded Diagnosis
 
-Preserve the public entrypoint, original failing assertion, and observations that distinguish causes. Exact numeric matching is needed only when it separates competing causes.
+Use Matt `diagnosing-bugs` or the host's equivalent through the original public failure. Preserve the original assertion and observations that distinguish causes. A cause-equivalent reproduction is sufficient; match an exact number only when that number separates competing causes.
 
-Each retry should answer an unresolved question and change a justified condition. Repeated green runs with identical inputs cannot establish a correct performance oracle. Preserve budgets, thresholds, and data semantics; diagnostic guards must allow the original acceptance assertion to be observed.
+Each retry answers an unresolved question by changing a justified condition. Repeated green runs with identical inputs cannot validate a defective performance oracle. Preserve acceptance, budgets, thresholds, and data semantics; diagnostic guards must permit the original assertion to be observed. An instrumentation repair supported by reliable evidence can proceed without exhaustive upstream investigation.
 
-When evidence is sufficient for a bounded repair, record why remaining probes add no useful distinction. At the diagnostic budget, summarize knowns and unknowns and reconsider or consult. Record missing permissions or external state as the relevant blocker. Release compute resources and continue independent ready work.
+At the diagnosis budget, summarize knowns and unknowns, reconsider the probe, consult, or report the actual blocker. Release heavy resources and continue independent ready work. Missing permissions or external state remain explicit limits.
 
-## Keep Execution and Records Bounded
+## Execution Ownership and Records
 
-A finite execution phase can include target red, minimal green, related verification, and cleanup. Hold resource locks only during actual execution and cleanup. Allow enough time for startup, execution, and cleanup before creating resources.
+An execution phase can include targeted red, minimal green, related checks, and cleanup. Reserve enough time for startup and cleanup, and hold heavy locks only for execution and cleanup. Use the host's isolation fixture and ownership ledger. Reconcile global resources at phase start, abnormal recovery, and completion; reconcile owned resources and consumers on ordinary retries. Confirm creating processes and consumers have stopped before removing owned temporary resources. Follow interruption/recovery cleanup and preserve persistent or shared development services.
 
-Use the host's isolation fixtures and ownership ledger. Reconcile global resources at phase start, abnormal recovery, and completion; reconcile owned resources and consumers for normal retries. Remove only resources whose ownership and stopped consumers are verified. Preserve persistent and shared development services and provide interruption cleanup according to the host policy.
-
-Progress reports retain commands, exits, revisions, environment, actual coverage, review version, and evidence paths. The PM acts on changes, failures, and real decisions rather than copying complete logs. Record stages in a lightweight journal and keep the current checkpoint short. Unknown intervals remain unknown instead of being attributed to waiting or CPU time.
+Reuse existing receipts and stage journals. CI state changes can come from the [observer](ci-observer.md); required-check selection, review coverage, authorization, and delivery remain PM decisions. Record runner completion, result notice, and next action separately when known. Current checkpoint and HTML are views of the same facts; keep unknown intervals unknown rather than attributing elapsed time to waiting or CPU work.
